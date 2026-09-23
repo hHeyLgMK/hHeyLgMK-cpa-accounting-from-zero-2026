@@ -394,6 +394,7 @@ function closeDrawer() {
 function showHelp() {
   openModal('使用说明', body => {
     body.append(el('p','','按 2026 年中注协《会计》考试大纲组织 30 章，共 120 道原创入门题。章节学习先读提示再作答；模拟练习在交卷后看解析；错题连续答对 3 次移出。'));
+    body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
     const a = el('a','','打开中注协官方模拟练习网站');
@@ -545,7 +546,13 @@ $('toggleSidebar').onclick = () => {
 };
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if (!$('modal').hidden) closeModal(); else closeDrawer(); }
-  if (!$('modal').hidden || e.target.closest('textarea, input, select') || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (!$('modal').hidden || e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (typeof e.target?.closest === 'function' && e.target.closest('textarea, input, select, [contenteditable="true"], [role="textbox"]')) return;
+  if (['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key) && session.items.length) {
+    e.preventDefault();
+    navigate(session.index + (e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1));
+    return;
+  }
   if (['1','2','3','4'].includes(e.key) && current()?.options) {
     const canonical = session.orders[current().id][Number(e.key)-1];
     if (canonical!==undefined) selectChoice(current(),canonical);

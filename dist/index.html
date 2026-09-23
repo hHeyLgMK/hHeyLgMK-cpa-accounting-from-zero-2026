@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#156bc1">
+  <meta name="description" content="按2026年注册会计师会计大纲30章编排的原创零基础题库。章节学习、机考模拟与错题复习。">
+  <title>CPA 会计从零刷题</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23156bc1'/%3E%3Cpath d='M16 19h32v28H16z' fill='none' stroke='white' stroke-width='3'/%3E%3Cpath d='M23 29h18M23 37h11' stroke='white' stroke-width='3'/%3E%3Cpath d='m36 40 4 4 8-9' fill='none' stroke='%23baf3dd' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">会</span><span><strong>CPA 会计从零刷题</strong><small>2026 大纲 · 原创入门练习</small></span></div>
+      <nav class="mode-tabs" aria-label="练习模式">
+        <button type="button" id="modeLearn" class="tab active">章节学习</button>
+        <button type="button" id="modeMock" class="tab">机考模拟</button>
+        <button type="button" id="modeWrong" class="tab">错题复习 <span id="wrongCount" class="tiny-count">0</span></button>
+      </nav>
+      <div class="top-actions"><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
+    </header>
+    <div class="shell">
+      <aside class="sidebar" id="sidebar" aria-label="试题列表">
+        <div class="sidebar-top"><div class="candidate"><div class="avatar" aria-hidden="true">学</div><div><strong>备考练习</strong><span>会计 · 30 章</span></div></div><div class="candidate-stat"><span id="doneCount">0 / 120 题已练</span><span id="streakCount">0 道待复习</span></div></div>
+        <div class="sidebar-body">
+          <label class="section-label" for="chapterSelect">章节选择</label>
+          <select id="chapterSelect" aria-label="选择章节"></select>
+          <div id="chapterNote" class="chapter-note"></div>
+          <div class="list-heading"><strong>试题列表</strong><button type="button" id="toggleSidebar" title="收起或展开试题列表">收起</button></div>
+          <div id="questionNav" class="question-nav"></div>
+          <div class="legend"><span><i class="dot current"></i>当前</span><span><i class="dot answered"></i>已答</span><span><i class="dot marked"></i>标记</span></div>
+        </div>
+        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><p>答题记录只保存在本设备。换设备或清除浏览器数据后不会同步。</p></div>
+      </aside>
+      <main class="workbench">
+        <div class="workhead">
+          <div class="workhead-left"><button type="button" id="mobileNav" class="mobile-nav">☰ 试题列表</button><div><span id="questionType" class="eyebrow"></span><h1 id="sessionTitle">第一章 · 总论</h1></div></div>
+          <div class="workhead-actions"><button type="button" id="fontDown" aria-label="缩小题目文字" title="缩小文字">A−</button><button type="button" id="fontUp" aria-label="放大题目文字" title="放大文字">A＋</button><button type="button" id="markBtn" class="mark-btn">☆ 标记</button></div>
+        </div>
+        <div class="paper" id="paper">
+          <div id="intro" class="intro"></div>
+          <div id="questionContent" class="question-content"></div>
+          <div id="feedback" class="feedback" hidden></div>
+          <div id="result" class="result" hidden></div>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left"><button type="button" id="calculatorBtn" class="tool-lite">▦ 计算器</button><span class="tool-tip" id="toolTip">选好答案后点击“提交答案”</span></div>
+          <div class="toolbar-right"><button type="button" id="prevBtn" class="tool-lite">上一题</button><button type="button" id="submitBtn" class="primary">提交答案</button><button type="button" id="nextBtn" class="primary ghost">下一题</button><button type="button" id="finishBtn" class="finish">交卷</button></div>
+        </div>
+      </main>
+    </div>
+    <div id="sideScrim" class="side-scrim" hidden></div>
+    <div id="modal" class="modal-backdrop" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-top"><h2 id="modalTitle"></h2><button type="button" id="modalClose" aria-label="关闭">×</button></div><div id="modalBody"></div></section></div>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

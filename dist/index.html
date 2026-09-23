@@ -10,7 +10,29 @@
   <link rel="stylesheet" href="./app.css">
 </head>
 <body>
-  <div class="app">
+  <section class="subject-picker" id="subjectPicker" aria-labelledby="subjectTitle">
+    <div class="subject-picker__inner">
+      <div class="subject-picker__brand"><span class="subject-picker__mark" aria-hidden="true">会</span> CPA 从零练习</div>
+      <h1 id="subjectTitle">选择练习科目</h1>
+      <p class="subject-picker__subtitle">先选科目，再进入章节学习、机考短练或错题复习。</p>
+      <div class="subject-card">
+        <h2>请选择需要练习的科目</h2>
+        <div class="subject-grid" aria-label="练习科目">
+          <button type="button" id="chooseAccounting" class="subject-choice available"><strong>会计</strong><span>已开放 · 30 章 / 120 题</span></button>
+          <button type="button" class="subject-choice" disabled><strong>税法</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice" disabled><strong>经济法</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice" disabled><strong>审计</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice" disabled><strong>财务成本管理</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice" disabled><strong>公司战略与风险管理</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice" disabled><strong>职业能力综合测试（试卷一）</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice" disabled><strong>职业能力综合测试（试卷二）</strong><span>题库待补充</span></button>
+        </div>
+        <p class="subject-picker__note">当前只有《会计》题库。返回此页时，正在进行的模拟练习会暂停计时；重新进入可继续作答。</p>
+      </div>
+      <p class="subject-picker__disclaimer">原创学习工具 · 非中注协官方练习网站</p>
+    </div>
+  </section>
+  <div class="app" id="practiceApp" hidden>
     <header class="topbar">
       <div class="brand"><span class="brand-mark" aria-hidden="true">会</span><span><strong>CPA 会计从零刷题</strong><small>2026 大纲 · 原创入门练习</small></span></div>
       <nav class="mode-tabs" aria-label="练习模式">
@@ -18,7 +40,7 @@
         <button type="button" id="modeMock" class="tab">机考模拟</button>
         <button type="button" id="modeWrong" class="tab">错题复习 <span id="wrongCount" class="tiny-count">0</span></button>
       </nav>
-      <div class="top-actions"><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
+      <div class="top-actions"><button type="button" id="changeSubject" class="change-subject" aria-label="返回科目选择">选科</button><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
     </header>
     <div class="shell">
       <aside class="sidebar" id="sidebar" aria-label="试题列表">

@@ -19,6 +19,7 @@ let session;
 let fontSize = 1;
 let timerHandle = null;
 let modalReturnFocus = null;
+let selectionOpen = true;
 const byId = new Map(questions.map(q => [q.id,q]));
 
 function save() {
@@ -48,7 +49,7 @@ function makeSession(mode, items) {
   if (timerHandle) clearInterval(timerHandle);
   if (mode === 'mock') {
     timerHandle = setInterval(() => {
-      if (session.mode !== 'mock' || session.finished) return;
+      if (selectionOpen || session.mode !== 'mock' || session.finished) return;
       session.seconds--;
       updateTimer();
       if (session.seconds <= 0) finishMock(true);
@@ -391,9 +392,25 @@ function closeDrawer() {
   $('sidebar').classList.remove('open');
   $('sideScrim').hidden = true;
 }
+function openAccounting() {
+  selectionOpen = false;
+  $('subjectPicker').hidden = true;
+  $('practiceApp').hidden = false;
+  updateTimer();
+  $('mode'+session.mode[0].toUpperCase()+session.mode.slice(1)).focus();
+}
+function showSubjectPicker() {
+  if (!$('modal').hidden) closeModal();
+  closeDrawer();
+  selectionOpen = true;
+  $('practiceApp').hidden = true;
+  $('subjectPicker').hidden = false;
+  $('chooseAccounting').focus();
+}
 function showHelp() {
   openModal('使用说明', body => {
     body.append(el('p','','按 2026 年中注协《会计》考试大纲组织 30 章，共 120 道原创入门题。章节学习先读提示再作答；模拟练习在交卷后看解析；错题连续答对 3 次移出。'));
+    body.append(el('p','','入口页可以选择科目。目前只开放《会计》；其他科目尚无题库。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
     body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
@@ -465,7 +482,18 @@ function registerWebMCP() {
       annotations:{readOnlyHint:true,untrustedContentHint:false},
       execute(input) {
         if (!input || typeof input!=='object' || Array.isArray(input) || Object.keys(input).length) throw Error('输入须为空对象');
-        return {mode:session.mode,chapter:session.mode==='learn'?chapterIndex+1:null,questionIndex:session.items.length?session.index+1:null,total:session.items.length,wrongCount:wrongCount(),finished:session.finished};
+        return {screen:selectionOpen?'subject_picker':'practice',mode:session.mode,chapter:session.mode==='learn'?chapterIndex+1:null,questionIndex:session.items.length?session.index+1:null,total:session.items.length,wrongCount:wrongCount(),finished:session.finished};
+      }
+    },
+    {
+      name:'open_accounting_practice', title:'进入会计练习',
+      description:'从科目选择页进入已经开放的会计题库，保留当前作答进度。',
+      inputSchema:{type:'object',properties:{},additionalProperties:false},
+      annotations:{readOnlyHint:false,untrustedContentHint:false},
+      execute(input) {
+        if (!input || typeof input!=='object' || Array.isArray(input) || Object.keys(input).length) throw Error('输入须为空对象');
+        openAccounting();
+        return {screen:'practice',subject:'会计',mode:session.mode,questionIndex:session.index+1};
       }
     },
     {
@@ -475,6 +503,7 @@ function registerWebMCP() {
       annotations:{readOnlyHint:false,untrustedContentHint:false},
       execute(input) {
         if (!input || !Number.isInteger(input.chapter) || input.chapter<1 || input.chapter>30 || Object.keys(input).some(k=>k!=='chapter')) throw Error('chapter 必须是 1 到 30 的整数');
+        openAccounting();
         startChapter(input.chapter-1);
         return {mode:'learn',chapter:input.chapter,title:chapters[input.chapter-1].title,questionCount:session.items.length};
       }
@@ -486,6 +515,7 @@ function registerWebMCP() {
       annotations:{readOnlyHint:false,untrustedContentHint:false},
       execute(input) {
         if (!input || !Number.isInteger(input.number) || input.number<1 || input.number>session.items.length || Object.keys(input).some(k=>k!=='number')) throw Error('题号超出当前练习范围');
+        openAccounting();
         navigate(input.number-1);
         return {number:input.number,id:current().id,type:current().type};
       }
@@ -502,6 +532,8 @@ chapters.forEach((ch,i) => {
   $('chapterSelect').append(option);
 });
 $('shuffleOptions').checked = data.shuffle;
+$('chooseAccounting').onclick = openAccounting;
+$('changeSubject').onclick = showSubjectPicker;
 $('chapterSelect').onchange = e => startChapter(Number(e.target.value));
 $('shuffleOptions').onchange = e => {
   data.shuffle = e.target.checked;
@@ -546,6 +578,7 @@ $('toggleSidebar').onclick = () => {
 };
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if (!$('modal').hidden) closeModal(); else closeDrawer(); }
+  if (selectionOpen) return;
   if (!$('modal').hidden || e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
   if (typeof e.target?.closest === 'function' && e.target.closest('textarea, input, select, [contenteditable="true"], [role="textbox"]')) return;
   if (['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key) && session.items.length) {

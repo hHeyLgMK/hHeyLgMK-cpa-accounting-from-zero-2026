@@ -18,7 +18,7 @@
       <div class="subject-card">
         <h2>请选择需要练习的科目</h2>
         <div class="subject-grid" aria-label="练习科目">
-          <button type="button" id="chooseAccounting" class="subject-choice available"><strong>会计</strong><span>已开放 · 30 章 / 120 题</span></button>
+          <button type="button" id="chooseAccounting" class="subject-choice available"><strong>会计</strong><span id="accountingSummary">已开放 · 30 章</span></button>
           <button type="button" class="subject-choice" disabled><strong>税法</strong><span>题库待补充</span></button>
           <button type="button" class="subject-choice" disabled><strong>经济法</strong><span>题库待补充</span></button>
           <button type="button" class="subject-choice" disabled><strong>审计</strong><span>题库待补充</span></button>
@@ -48,6 +48,7 @@
         <div class="sidebar-body">
           <label class="section-label" for="chapterSelect">章节选择</label>
           <select id="chapterSelect" aria-label="选择章节"></select>
+          <div id="sectionPicker" class="section-picker" hidden><label class="section-label" for="sectionSelect">知识节</label><select id="sectionSelect" aria-label="选择知识节"></select></div>
           <div id="chapterNote" class="chapter-note"></div>
           <div class="list-heading"><strong>试题列表</strong><button type="button" id="toggleSidebar" title="收起或展开试题列表">收起</button></div>
           <div id="questionNav" class="question-nav"></div>

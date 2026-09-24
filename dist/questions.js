@@ -1,3 +1,5 @@
+import {basicTheoryQuestions} from './basic-theory.js';
+
 const S=(stem,options,answer,explain)=>({type:"single",stem,options,answer,explain});
 const M=(stem,options,answer,explain)=>({type:"multi",stem,options,answer,explain});
 const W=(stem,sample,explain)=>({type:"written",stem,sample,explain});
@@ -184,7 +186,30 @@ M("本章入门应分清哪些不同领域？",["政府单位财务会计","政�
 W("政府单位收到一笔财政拨款。为什么不能把它简单照搬成普通企业销售商品收入？","政府单位的预算与财务报告目标及适用准则不同，财政拨款应按政府会计相关规定判断和核算。","交易来源及主体性质不同，适用的会计规则也可能不同。")
 ])
 ];
+function adaptBasicTheory(item) {
+  const optionKeys = item.options?.map(option => option.key) || [];
+  const answerKeys = item.type === 'written' ? [] : Array.isArray(item.answer) ? item.answer : String(item.answer).split(/[、,，]/);
+  const indices = answerKeys.map(key => optionKeys.indexOf(key.trim()));
+  if (item.type !== 'written' && indices.some(index => index < 0)) throw new Error('题目答案未匹配选项：'+item.id);
+  return {
+    id:item.id,
+    type:item.type,
+    stem:item.stem,
+    options:item.options?.map(option => option.text),
+    answer:item.type === 'single' ? indices[0] : item.type === 'multi' ? indices : undefined,
+    sample:item.sample,
+    explain:item.explanation,
+    knowledgePoint:item.topic,
+    source:{chapter:item.chapter,section:item.section,printedPage:item.printedPage,pdfPage:item.pdfPage},
+    level:'零基础'
+  };
+}
+for (let chapterIndex = 0; chapterIndex < 3; chapterIndex++) {
+  const chapterNumber = chapterIndex + 1;
+  const items = basicTheoryQuestions.filter(item => Number(item.id?.match(/^CH?([1-3])-/i)?.[1]) === chapterNumber);
+  if (items.length) chapters[chapterIndex].items = items.map(adaptBasicTheory);
+}
 export const questions=chapters.flatMap((ch,chapterIndex)=>ch.items.map((item,questionIndex)=>({
-  ...item,id:'c'+String(chapterIndex+1).padStart(2,'0')+'-q'+(questionIndex+1),
-  chapterIndex,chapterTitle:ch.title,level:questionIndex===0?"认识":questionIndex===1?"理解":questionIndex===2?"辨析":"动手"
+  ...item,id:item.id || 'c'+String(chapterIndex+1).padStart(2,'0')+'-q'+(questionIndex+1),
+  chapterIndex,chapterTitle:ch.title,level:item.level || (questionIndex===0?"认识":questionIndex===1?"理解":questionIndex===2?"辨析":"动手")
 })));

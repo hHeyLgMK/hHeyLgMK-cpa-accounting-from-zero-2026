@@ -15,6 +15,7 @@ try {
   } : defaultData;
 } catch { data = defaultData; }
 let chapterIndex = 0;
+let sectionName = null;
 let session;
 let fontSize = 1;
 let timerHandle = null;
@@ -58,9 +59,30 @@ function makeSession(mode, items) {
   closeDrawer();
   render();
 }
-function startChapter(index) {
+function chapterSections(index) {
+  return [...new Set(questions.filter(q => q.chapterIndex === index).map(q => q.source?.section).filter(Boolean))];
+}
+function startChapter(index, requestedSection) {
+  const previousSection = index === chapterIndex ? sectionName : null;
   chapterIndex = index;
-  makeSession('learn', questions.filter(q => q.chapterIndex === index));
+  const sections = chapterSections(index);
+  sectionName = requestedSection === undefined ? (previousSection && (previousSection === '__all__' || sections.includes(previousSection)) ? previousSection : sections[0] || '__all__') : requestedSection;
+  if (sectionName !== '__all__' && !sections.includes(sectionName)) sectionName = sections[0] || '__all__';
+  const sectionSelect = $('sectionSelect');
+  sectionSelect.replaceChildren();
+  if (sections.length) {
+    const all = el('option','','本章全部（'+chapters[index].items.length+' 题）');
+    all.value = '__all__';
+    sectionSelect.append(all);
+    sections.forEach(section => {
+      const count = questions.filter(q => q.chapterIndex === index && q.source?.section === section).length;
+      const option = el('option','',section+'（'+count+' 题）');
+      option.value = section;
+      sectionSelect.append(option);
+    });
+    sectionSelect.value = sectionName;
+  }
+  makeSession('learn', questions.filter(q => q.chapterIndex === index && (sectionName === '__all__' || q.source?.section === sectionName)));
 }
 function startMock() {
   const singles = shuffle(questions.filter(q => q.type === 'single')).slice(0,10);
@@ -251,6 +273,13 @@ function renderQuestion(q) {
   }
   renderFeedback(q,a);
 }
+function sourceLabel(q) {
+  if (!q.source) return '';
+  const {chapter, section, printedPage, pdfPage} = q.source;
+  const location = [chapter, section].filter(Boolean).join(' · ');
+  const pages = [printedPage ? '教材第 '+printedPage+' 页' : '', pdfPage ? 'PDF 第 '+pdfPage+' 页' : ''].filter(Boolean).join(' / ');
+  return [location, pages].filter(Boolean).join(' · ');
+}
 function renderFeedback(q,a) {
   const panel = $('feedback');
   panel.replaceChildren();
@@ -279,6 +308,8 @@ function renderFeedback(q,a) {
       panel.append(row);
     }
   }
+  if (q.knowledgePoint) panel.append(el('p','knowledge-line','知识点：'+q.knowledgePoint));
+  if (q.source) panel.append(el('p','source-line','教材位置：'+sourceLabel(q)));
   if (data.records[q.id]?.wrong) {
     const n = data.records[q.id].streak || 0;
     panel.append(el('p','writing-hint','错题复习进度：连续答对 '+n+' / 3 次可移出错题本。'));
@@ -326,14 +357,16 @@ function render() {
   }
   $('chapterSelect').value = String(chapterIndex);
   $('chapterSelect').disabled = session.mode !== 'learn';
-  $('chapterNote').textContent = session.mode === 'learn' ? chapters[chapterIndex].lead
+  $('sectionPicker').hidden = session.mode !== 'learn' || !chapterSections(chapterIndex).length;
+  $('sectionSelect').disabled = session.mode !== 'learn';
+  $('chapterNote').textContent = session.mode === 'learn' ? (sectionName === '__all__' ? '本章共 '+chapters[chapterIndex].items.length+' 题。' : '当前练习 '+session.items.length+' / '+chapters[chapterIndex].items.length+' 题；切换知识节可练习其余题目。')+' '+chapters[chapterIndex].lead
     : session.mode === 'mock' ? '45 分钟 · 随机抽取 20 题 · 交卷后查看解析与自评'
     : '答错或自评“还不会”的题进入错题本；连续答对 3 次移出。';
   renderNav();
   const q = current();
-  $('questionType').textContent = session.mode === 'learn' ? '章节学习 · 逐题讲解'
+  $('questionType').textContent = session.mode === 'learn' ? (chapterIndex < 3 ? '基础理论 · 逐题讲解' : '章节学习 · 逐题讲解')
     : session.mode === 'mock' ? '机考模拟 · 原创练习' : '错题复习 · 巩固';
-  $('sessionTitle').textContent = session.mode === 'learn' ? '第 '+(chapterIndex+1)+' 章 · '+chapters[chapterIndex].title
+  $('sessionTitle').textContent = session.mode === 'learn' ? '第 '+(chapterIndex+1)+' 章 · '+chapters[chapterIndex].title+(sectionName === '__all__' ? '' : ' · '+sectionName)
     : session.mode === 'mock' ? '会计 · 模拟练习' : '会计 · 错题复习';
   $('markBtn').disabled = !q || session.showResult;
   $('markBtn').classList.toggle('active',Boolean(q && data.marks.includes(q.id)));
@@ -409,7 +442,7 @@ function showSubjectPicker() {
 }
 function showHelp() {
   openModal('使用说明', body => {
-    body.append(el('p','','按 2026 年中注协《会计》考试大纲组织 30 章，共 120 道原创入门题。章节学习先读提示再作答；模拟练习在交卷后看解析；错题连续答对 3 次移出。'));
+    body.append(el('p','','按 2026 年《会计》教材组织 30 章，共 '+questions.length+' 道原创入门题。基础理论对应第 1 至 3 章，答案解析标有教材位置。章节学习先读提示再作答；模拟练习在交卷后看解析；错题连续答对 3 次移出。'));
     body.append(el('p','','入口页可以选择科目。目前只开放《会计》；其他科目尚无题库。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
     body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
@@ -526,15 +559,22 @@ function registerWebMCP() {
     catch { /* No supported WebMCP context. */ }
   }
 }
+const basicGroup = el('optgroup');
+basicGroup.label = '基础理论（第 1—3 章）';
+const otherGroup = el('optgroup');
+otherGroup.label = '其余章节';
 chapters.forEach((ch,i) => {
-  const option = el('option','',String(i+1).padStart(2,'0')+' · '+ch.title);
+  const option = el('option','',String(i+1).padStart(2,'0')+' · '+ch.title+'（'+ch.items.length+' 题）');
   option.value = String(i);
-  $('chapterSelect').append(option);
+  (i < 3 ? basicGroup : otherGroup).append(option);
 });
+$('chapterSelect').append(basicGroup,otherGroup);
+$('accountingSummary').textContent = '已开放 · '+chapters.length+' 章 / '+questions.length+' 题';
 $('shuffleOptions').checked = data.shuffle;
 $('chooseAccounting').onclick = openAccounting;
 $('changeSubject').onclick = showSubjectPicker;
 $('chapterSelect').onchange = e => startChapter(Number(e.target.value));
+$('sectionSelect').onchange = e => startChapter(chapterIndex,e.target.value);
 $('shuffleOptions').onchange = e => {
   data.shuffle = e.target.checked;
   save();

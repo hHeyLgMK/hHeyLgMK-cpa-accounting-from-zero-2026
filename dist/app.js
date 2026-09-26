@@ -1,4 +1,10 @@
-import {chapters, questions} from './questions.js';
+import {chapters as accountingChapters, questions as accountingQuestions} from './questions.js';
+import {extraSubjects} from './extra-subjects.js';
+const accountingModules = [['基础理论',[1,2,3]],['资产与投资',[4,5,6,7,15]],['负债与权益',[8,9,10,11,12,16]],['金融工具与租赁',[13,14]],['收入与特殊交易',[17,18,19,20,21,22]],['报告与变更',[23,24,25]],['合并与计量',[26,27,28,29]],['政府与非营利',[30]]];
+const subjects = {accounting:{name:'会计',chapters:accountingChapters,questions:accountingQuestions,modules:accountingModules},...extraSubjects};
+let subjectId='accounting';
+let chapters=accountingChapters, questions=accountingQuestions;
+const subjectSessions=new Map();
 
 const $ = id => document.getElementById(id);
 const typeName = {single:'单项选择题', multi:'多项选择题', written:'简答与应用题'};
@@ -21,7 +27,7 @@ let fontSize = 1;
 let timerHandle = null;
 let modalReturnFocus = null;
 let selectionOpen = true;
-const byId = new Map(questions.map(q => [q.id,q]));
+let byId = new Map(questions.map(q => [q.id,q]));
 
 function save() {
   try { localStorage.setItem(storageKey, JSON.stringify(data)); }
@@ -47,8 +53,13 @@ function makeSession(mode, items) {
     if (q.options) orders[q.id] = data.shuffle ? shuffle(q.options.map((_,i) => i)) : q.options.map((_,i) => i);
   });
   session = {mode, items, index:0, answers:{}, orders, marked:new Set(data.marks), finished:false, showResult:false, seconds:45*60};
+  startTimer();
+  closeDrawer();
+  render();
+}
+function startTimer() {
   if (timerHandle) clearInterval(timerHandle);
-  if (mode === 'mock') {
+  if (session.mode === 'mock') {
     timerHandle = setInterval(() => {
       if (selectionOpen || session.mode !== 'mock' || session.finished) return;
       session.seconds--;
@@ -56,8 +67,6 @@ function makeSession(mode, items) {
       if (session.seconds <= 0) finishMock(true);
     }, 1000);
   }
-  closeDrawer();
-  render();
 }
 function chapterSections(index) {
   return [...new Set(questions.filter(q => q.chapterIndex === index).map(q => q.source?.section).filter(Boolean))];
@@ -66,12 +75,18 @@ function startChapter(index, requestedSection) {
   const previousSection = index === chapterIndex ? sectionName : null;
   chapterIndex = index;
   const sections = chapterSections(index);
-  sectionName = requestedSection === undefined ? (previousSection && (previousSection === '__all__' || sections.includes(previousSection)) ? previousSection : sections[0] || '__all__') : requestedSection;
+  sectionName = requestedSection === undefined ? (previousSection && (previousSection === '__all__' || sections.includes(previousSection)) ? previousSection : (subjectId === 'accounting' ? sections[0] : '__all__') || '__all__') : requestedSection;
   if (sectionName !== '__all__' && !sections.includes(sectionName)) sectionName = sections[0] || '__all__';
+  populateSections();
+  makeSession('learn', questions.filter(q => q.chapterIndex === index && (sectionName === '__all__' || q.source?.section === sectionName)));
+}
+function populateSections() {
+  const index=chapterIndex;
+  const sections=chapterSections(index);
   const sectionSelect = $('sectionSelect');
   sectionSelect.replaceChildren();
   if (sections.length) {
-    const all = el('option','','本章全部（'+chapters[index].items.length+' 题）');
+    const all = el('option','','本章全部（'+chapters[chapterIndex].items.length+' 题）');
     all.value = '__all__';
     sectionSelect.append(all);
     sections.forEach(section => {
@@ -82,7 +97,6 @@ function startChapter(index, requestedSection) {
     });
     sectionSelect.value = sectionName;
   }
-  makeSession('learn', questions.filter(q => q.chapterIndex === index && (sectionName === '__all__' || q.source?.section === sectionName)));
 }
 function startMock() {
   const singles = shuffle(questions.filter(q => q.type === 'single')).slice(0,10);
@@ -275,8 +289,8 @@ function renderQuestion(q) {
 }
 function sourceLabel(q) {
   if (!q.source) return '';
-  const {chapter, section, printedPage, pdfPage} = q.source;
-  const location = [chapter, section].filter(Boolean).join(' · ');
+  const {book, chapter, section, printedPage, pdfPage} = q.source;
+  const location = [book, chapter, section].filter(Boolean).join(' · ');
   const pages = [printedPage ? '教材第 '+printedPage+' 页' : '', pdfPage ? 'PDF 第 '+pdfPage+' 页' : ''].filter(Boolean).join(' / ');
   return [location, pages].filter(Boolean).join(' · ');
 }
@@ -364,10 +378,10 @@ function render() {
     : '答错或自评“还不会”的题进入错题本；连续答对 3 次移出。';
   renderNav();
   const q = current();
-  $('questionType').textContent = session.mode === 'learn' ? (chapterIndex < 3 ? '基础理论 · 逐题讲解' : '章节学习 · 逐题讲解')
+  $('questionType').textContent = session.mode === 'learn' ? (subjects[subjectId].modules.find(m=>m[1].includes(chapterIndex+1))?.[0]+' · 零基础')
     : session.mode === 'mock' ? '机考模拟 · 原创练习' : '错题复习 · 巩固';
   $('sessionTitle').textContent = session.mode === 'learn' ? '第 '+(chapterIndex+1)+' 章 · '+chapters[chapterIndex].title+(sectionName === '__all__' ? '' : ' · '+sectionName)
-    : session.mode === 'mock' ? '会计 · 模拟练习' : '会计 · 错题复习';
+    : session.mode === 'mock' ? subjects[subjectId].name+' · 模拟练习' : subjects[subjectId].name+' · 错题复习';
   $('markBtn').disabled = !q || session.showResult;
   $('markBtn').classList.toggle('active',Boolean(q && data.marks.includes(q.id)));
   $('markBtn').textContent = q && data.marks.includes(q.id) ? '★ 已标记' : '☆ 标记';
@@ -425,7 +439,21 @@ function closeDrawer() {
   $('sidebar').classList.remove('open');
   $('sideScrim').hidden = true;
 }
-function openAccounting() {
+function openAccounting() { openSubject('accounting'); }
+function openSubject(id) {
+  if (id !== subjectId) {
+    subjectSessions.set(subjectId,{session,chapterIndex,sectionName});
+    subjectId=id;
+    ({chapters,questions}=subjects[id]);
+    byId=new Map(questions.map(q=>[q.id,q]));
+    populateChapters();
+    const previous=subjectSessions.get(id);
+    if (previous) { ({session,chapterIndex,sectionName}=previous); populateSections(); startTimer(); render(); }
+    else {chapterIndex=0;sectionName=null;startChapter(0);}
+  }
+  document.querySelector('.brand small').textContent='2026 教材 · '+subjects[id].name+'入门题库';
+  document.querySelector('.candidate span').textContent=subjects[id].name+' · '+chapters.length+' 章';
+  document.querySelector('.download-link').href=id==='accounting'?'./questions.csv':'./'+id+'-questions.csv';
   selectionOpen = false;
   $('subjectPicker').hidden = true;
   $('practiceApp').hidden = false;
@@ -442,8 +470,8 @@ function showSubjectPicker() {
 }
 function showHelp() {
   openModal('使用说明', body => {
-    body.append(el('p','','按 2026 年《会计》教材组织 30 章，共 '+questions.length+' 道原创入门题。基础理论对应第 1 至 3 章，答案解析标有教材位置。章节学习先读提示再作答；模拟练习在交卷后看解析；错题连续答对 3 次移出。'));
-    body.append(el('p','','入口页可以选择科目。目前只开放《会计》；其他科目尚无题库。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
+    body.append(el('p','','当前科目：《'+subjects[subjectId].name+'》，'+chapters.length+' 章、'+questions.length+' 道原创入门题。按学习模块选章；章节学习先读提示再作答。新增四科每章 4 道起步题，覆盖基础概念，不代表已覆盖全书所有考点。解析标注教材位置；模拟练习交卷后看解析；错题连续答对 3 次移出。'));
+    body.append(el('p','','入口页可以选择科目。已开放会计、税法、经济法、审计、财务成本管理。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
     body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
@@ -515,7 +543,7 @@ function registerWebMCP() {
       annotations:{readOnlyHint:true,untrustedContentHint:false},
       execute(input) {
         if (!input || typeof input!=='object' || Array.isArray(input) || Object.keys(input).length) throw Error('输入须为空对象');
-        return {screen:selectionOpen?'subject_picker':'practice',mode:session.mode,chapter:session.mode==='learn'?chapterIndex+1:null,questionIndex:session.items.length?session.index+1:null,total:session.items.length,wrongCount:wrongCount(),finished:session.finished};
+        return {subject:subjects[subjectId].name,screen:selectionOpen?'subject_picker':'practice',mode:session.mode,chapter:session.mode==='learn'?chapterIndex+1:null,questionIndex:session.items.length?session.index+1:null,total:session.items.length,wrongCount:wrongCount(),finished:session.finished};
       }
     },
     {
@@ -548,7 +576,7 @@ function registerWebMCP() {
       annotations:{readOnlyHint:false,untrustedContentHint:false},
       execute(input) {
         if (!input || !Number.isInteger(input.number) || input.number<1 || input.number>session.items.length || Object.keys(input).some(k=>k!=='number')) throw Error('题号超出当前练习范围');
-        openAccounting();
+        openSubject(subjectId);
         navigate(input.number-1);
         return {number:input.number,id:current().id,type:current().type};
       }
@@ -559,17 +587,20 @@ function registerWebMCP() {
     catch { /* No supported WebMCP context. */ }
   }
 }
-const basicGroup = el('optgroup');
-basicGroup.label = '基础理论（第 1—3 章）';
-const otherGroup = el('optgroup');
-otherGroup.label = '其余章节';
-chapters.forEach((ch,i) => {
-  const option = el('option','',String(i+1).padStart(2,'0')+' · '+ch.title+'（'+ch.items.length+' 题）');
-  option.value = String(i);
-  (i < 3 ? basicGroup : otherGroup).append(option);
-});
-$('chapterSelect').append(basicGroup,otherGroup);
-$('accountingSummary').textContent = '已开放 · '+chapters.length+' 章 / '+questions.length+' 题';
+function populateChapters() {
+  $('chapterSelect').replaceChildren();
+  subjects[subjectId].modules.forEach(([name,numbers])=>{
+    const group=el('optgroup');group.label=name;
+    numbers.forEach(n=>{const ch=chapters[n-1];const option=el('option','',String(n).padStart(2,'0')+' · '+ch.title+'（'+ch.items.length+' 题）');option.value=String(n-1);group.append(option);});
+    $('chapterSelect').append(group);
+  });
+}
+populateChapters();
+for (const [id,subject] of Object.entries(subjects)) {
+  const button=document.querySelector('[data-subject="'+id+'"]');
+  button.querySelector('span').textContent='已开放 · '+subject.chapters.length+' 章 / '+subject.questions.length+' 题';
+  button.onclick=()=>openSubject(id);
+}
 $('shuffleOptions').checked = data.shuffle;
 $('chooseAccounting').onclick = openAccounting;
 $('changeSubject').onclick = showSubjectPicker;

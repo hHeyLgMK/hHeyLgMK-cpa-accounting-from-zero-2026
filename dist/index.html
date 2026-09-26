@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#156bc1">
-  <meta name="description" content="CPA刷题库：按2026年注册会计师会计大纲30章编排的原创零基础题库。章节学习、机考模拟与错题复习。">
+  <meta name="description" content="CPA刷题库：按2026年教材编排的五科原创零基础题库。章节学习、机考模拟与错题复习。">
   <title>CPA刷题库</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23156bc1'/%3E%3Cpath d='M16 19h32v28H16z' fill='none' stroke='white' stroke-width='3'/%3E%3Cpath d='M23 29h18M23 37h11' stroke='white' stroke-width='3'/%3E%3Cpath d='m36 40 4 4 8-9' fill='none' stroke='%23baf3dd' stroke-width='3'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./app.css">
@@ -18,23 +18,23 @@
       <div class="subject-card">
         <h2>请选择需要练习的科目</h2>
         <div class="subject-grid" aria-label="练习科目">
-          <button type="button" id="chooseAccounting" class="subject-choice available"><strong>会计</strong><span id="accountingSummary">已开放 · 30 章</span></button>
-          <button type="button" class="subject-choice" disabled><strong>税法</strong><span>题库待补充</span></button>
-          <button type="button" class="subject-choice" disabled><strong>经济法</strong><span>题库待补充</span></button>
-          <button type="button" class="subject-choice" disabled><strong>审计</strong><span>题库待补充</span></button>
-          <button type="button" class="subject-choice" disabled><strong>财务成本管理</strong><span>题库待补充</span></button>
+          <button type="button" id="chooseAccounting" data-subject="accounting" class="subject-choice available"><strong>会计</strong><span id="accountingSummary">已开放 · 30 章</span></button>
+          <button type="button" class="subject-choice available" data-subject="tax"><strong>税法</strong><span>载入题库</span></button>
+          <button type="button" class="subject-choice available" data-subject="law"><strong>经济法</strong><span>载入题库</span></button>
+          <button type="button" class="subject-choice available" data-subject="audit"><strong>审计</strong><span>载入题库</span></button>
+          <button type="button" class="subject-choice available" data-subject="finance"><strong>财务成本管理</strong><span>载入题库</span></button>
           <button type="button" class="subject-choice" disabled><strong>公司战略与风险管理</strong><span>题库待补充</span></button>
           <button type="button" class="subject-choice" disabled><strong>职业能力综合测试（试卷一）</strong><span>题库待补充</span></button>
           <button type="button" class="subject-choice" disabled><strong>职业能力综合测试（试卷二）</strong><span>题库待补充</span></button>
         </div>
-        <p class="subject-picker__note">当前只有《会计》题库。返回此页时，正在进行的模拟练习会暂停计时；重新进入可继续作答。</p>
+        <p class="subject-picker__note">四科新增每章 4 道零基础起步题，解析附教材页码。返回此页时，正在进行的模拟练习会暂停计时；重新进入可继续作答。</p>
       </div>
       <p class="subject-picker__disclaimer">原创学习工具 · 非中注协官方练习网站</p>
     </div>
   </section>
   <div class="app" id="practiceApp" hidden>
     <header class="topbar">
-      <div class="brand"><span class="brand-mark" aria-hidden="true">题</span><span><strong>CPA刷题库</strong><small>2026 大纲 · 会计入门题库</small></span></div>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">题</span><span><strong>CPA刷题库</strong><small>2026 教材 · 会计入门题库</small></span></div>
       <nav class="mode-tabs" aria-label="练习模式">
         <button type="button" id="modeLearn" class="tab active">章节学习</button>
         <button type="button" id="modeMock" class="tab">机考模拟</button>
@@ -44,9 +44,9 @@
     </header>
     <div class="shell">
       <aside class="sidebar" id="sidebar" aria-label="试题列表">
-        <div class="sidebar-top"><div class="candidate"><div class="avatar" aria-hidden="true">学</div><div><strong>备考练习</strong><span>会计 · 30 章</span></div></div><div class="candidate-stat"><span id="doneCount">0 / 120 题已练</span><span id="streakCount">0 道待复习</span></div></div>
+        <div class="sidebar-top"><div class="candidate"><div class="avatar" aria-hidden="true">学</div><div><strong>备考练习</strong><span>会计 · 30 章</span></div></div><div class="candidate-stat"><span id="doneCount">0 / 388 题已练</span><span id="streakCount">0 道待复习</span></div></div>
         <div class="sidebar-body">
-          <label class="section-label" for="chapterSelect">章节选择</label>
+          <label class="section-label" for="chapterSelect">学习模块与章节</label>
           <select id="chapterSelect" aria-label="选择章节"></select>
           <div id="sectionPicker" class="section-picker" hidden><label class="section-label" for="sectionSelect">知识节</label><select id="sectionSelect" aria-label="选择知识节"></select></div>
           <div id="chapterNote" class="chapter-note"></div>
@@ -54,7 +54,7 @@
           <div id="questionNav" class="question-nav"></div>
           <div class="legend"><span><i class="dot current"></i>当前</span><span><i class="dot answered"></i>已答</span><span><i class="dot marked"></i>标记</span></div>
         </div>
-        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><p>答题记录只保存在本设备。换设备或清除浏览器数据后不会同步。</p></div>
+        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><a class="download-link guide-link" href="./study-guide.md" download>下载四科学习模块表</a><p>答题记录只保存在本设备。换设备或清除浏览器数据后不会同步。</p></div>
       </aside>
       <main class="workbench">
         <div class="workhead">

@@ -69,7 +69,7 @@ function startTimer() {
   }
 }
 function chapterSections(index) {
-  return [...new Set(questions.filter(q => q.chapterIndex === index).map(q => q.source?.section).filter(Boolean))];
+  return [...new Set(questions.filter(q => q.chapterIndex === index).map(q => q.studySection || q.source?.section).filter(Boolean))];
 }
 function startChapter(index, requestedSection) {
   const previousSection = index === chapterIndex ? sectionName : null;
@@ -78,7 +78,7 @@ function startChapter(index, requestedSection) {
   sectionName = requestedSection === undefined ? (previousSection && (previousSection === '__all__' || sections.includes(previousSection)) ? previousSection : (subjectId === 'accounting' ? sections[0] : '__all__') || '__all__') : requestedSection;
   if (sectionName !== '__all__' && !sections.includes(sectionName)) sectionName = sections[0] || '__all__';
   populateSections();
-  makeSession('learn', questions.filter(q => q.chapterIndex === index && (sectionName === '__all__' || q.source?.section === sectionName)));
+  makeSession('learn', questions.filter(q => q.chapterIndex === index && (sectionName === '__all__' || (q.studySection || q.source?.section) === sectionName)));
 }
 function populateSections() {
   const index=chapterIndex;
@@ -90,7 +90,7 @@ function populateSections() {
     all.value = '__all__';
     sectionSelect.append(all);
     sections.forEach(section => {
-      const count = questions.filter(q => q.chapterIndex === index && q.source?.section === section).length;
+      const count = questions.filter(q => q.chapterIndex === index && (q.studySection || q.source?.section) === section).length;
       const option = el('option','',section+'（'+count+' 题）');
       option.value = section;
       sectionSelect.append(option);
@@ -289,10 +289,10 @@ function renderQuestion(q) {
 }
 function sourceLabel(q) {
   if (!q.source) return '';
-  const {book, chapter, section, printedPage, pdfPage} = q.source;
+  const {book, chapter, section, printedPage, pdfPage, note} = q.source;
   const location = [book, chapter, section].filter(Boolean).join(' · ');
   const pages = [printedPage ? '教材第 '+printedPage+' 页' : '', pdfPage ? 'PDF 第 '+pdfPage+' 页' : ''].filter(Boolean).join(' / ');
-  return [location, pages].filter(Boolean).join(' · ');
+  return [location, pages, note].filter(Boolean).join(' · ');
 }
 function renderFeedback(q,a) {
   const panel = $('feedback');
@@ -323,7 +323,15 @@ function renderFeedback(q,a) {
     }
   }
   if (q.knowledgePoint) panel.append(el('p','knowledge-line','知识点：'+q.knowledgePoint));
-  if (q.source) panel.append(el('p','source-line','教材位置：'+sourceLabel(q)));
+  if (q.source) {
+    const line = el('p','source-line',(q.source.locationGranularity === 'official' ? '官方补充：' : q.source.locationGranularity === 'section' ? '教材阅读范围：' : '教材位置：')+sourceLabel(q));
+    if (q.source.url) {
+      const link = el('a','','查看官方原文');
+      link.href=q.source.url;link.target='_blank';link.rel='noopener noreferrer';
+      line.append(document.createTextNode(' '),link);
+    }
+    panel.append(line);
+  }
   if (data.records[q.id]?.wrong) {
     const n = data.records[q.id].streak || 0;
     panel.append(el('p','writing-hint','错题复习进度：连续答对 '+n+' / 3 次可移出错题本。'));
@@ -376,6 +384,10 @@ function render() {
   $('chapterNote').textContent = session.mode === 'learn' ? (sectionName === '__all__' ? '本章共 '+chapters[chapterIndex].items.length+' 题。' : '当前练习 '+session.items.length+' / '+chapters[chapterIndex].items.length+' 题；切换知识节可练习其余题目。')+' '+chapters[chapterIndex].lead
     : session.mode === 'mock' ? '45 分钟 · 随机抽取 20 题 · 交卷后查看解析与自评'
     : '答错或自评“还不会”的题进入错题本；连续答对 3 次移出。';
+  if (session.mode === 'learn' && chapters[chapterIndex].coverage) {
+    const c=chapters[chapterIndex].coverage;
+    $('chapterNote').textContent += ' 本章 '+c.sections+' 节均有练习，清单列出 '+c.points+' 个知识点条目。';
+  }
   renderNav();
   const q = current();
   $('questionType').textContent = session.mode === 'learn' ? (subjects[subjectId].modules.find(m=>m[1].includes(chapterIndex+1))?.[0]+' · 零基础')
@@ -470,7 +482,12 @@ function showSubjectPicker() {
 }
 function showHelp() {
   openModal('使用说明', body => {
-    body.append(el('p','','当前科目：《'+subjects[subjectId].name+'》，'+chapters.length+' 章、'+questions.length+' 道原创入门题。按学习模块选章；章节学习先读提示再作答。新增四科每章 4 道起步题，覆盖基础概念，不代表已覆盖全书所有考点。解析标注教材位置；模拟练习交卷后看解析；错题连续答对 3 次移出。'));
+    body.append(el('p','','当前科目：《'+subjects[subjectId].name+'》，'+chapters.length+' 章、'+questions.length+' 道原创练习题。按模块、章节和知识节学习；简答题对照参考答案自评。模拟练习交卷后看解析；错题连续答对 3 次移出。'));
+    if (subjects[subjectId].coverage) {
+      const c=subjects[subjectId].coverage;
+      body.append(el('p','',c.coveredSections+' / '+c.sections+' 节已有题目，知识点清单列出 '+c.knowledgePoints+' 个条目（按节同名去重）。覆盖到每一节不等于穷尽全部细则、例外或综合考法。可下载模块与知识点清单核对。'));
+      body.append(el('p','','新增题标注所属知识节的教材和 PDF 阅读范围。税法扫描缺少印刷页 628—629；相关补充题单列官方来源。'));
+    }
     body.append(el('p','','入口页可以选择科目。已开放会计、税法、经济法、审计、财务成本管理。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
     body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));

@@ -1,4 +1,5 @@
 import {basicTheoryQuestions} from './basic-theory.js';
+import {expandedAccountingQuestions} from './accounting-expanded.js';
 
 const S=(stem,options,answer,explain)=>({type:"single",stem,options,answer,explain});
 const M=(stem,options,answer,explain)=>({type:"multi",stem,options,answer,explain});
@@ -186,7 +187,7 @@ M("本章入门应分清哪些不同领域？",["政府单位财务会计","政�
 W("政府单位收到一笔财政拨款。为什么不能把它简单照搬成普通企业销售商品收入？","政府单位的预算与财务报告目标及适用准则不同，财政拨款应按政府会计相关规定判断和核算。","交易来源及主体性质不同，适用的会计规则也可能不同。")
 ])
 ];
-function adaptBasicTheory(item) {
+function adaptTextbookQuestion(item) {
   const optionKeys = item.options?.map(option => option.key) || [];
   const answerKeys = item.type === 'written' ? [] : Array.isArray(item.answer) ? item.answer : String(item.answer).split(/[、,，]/);
   const indices = answerKeys.map(key => optionKeys.indexOf(key.trim()));
@@ -204,10 +205,11 @@ function adaptBasicTheory(item) {
     level:'零基础'
   };
 }
-for (let chapterIndex = 0; chapterIndex < 3; chapterIndex++) {
+const textbookQuestions = [...basicTheoryQuestions, ...expandedAccountingQuestions];
+for (let chapterIndex = 0; chapterIndex < chapters.length; chapterIndex++) {
   const chapterNumber = chapterIndex + 1;
-  const items = basicTheoryQuestions.filter(item => Number(item.id?.match(/^CH?([1-3])-/i)?.[1]) === chapterNumber);
-  if (items.length) chapters[chapterIndex].items = items.map(adaptBasicTheory);
+  const items = textbookQuestions.filter(item => Number(item.id?.match(/^CH?(\d+)-/i)?.[1]) === chapterNumber);
+  if (items.length) chapters[chapterIndex].items = items.map(adaptTextbookQuestion);
 }
 export const questions=chapters.flatMap((ch,chapterIndex)=>ch.items.map((item,questionIndex)=>({
   ...item,id:item.id || 'c'+String(chapterIndex+1).padStart(2,'0')+'-q'+(questionIndex+1),

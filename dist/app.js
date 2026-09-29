@@ -1,6 +1,6 @@
 import {chapters as accountingChapters, questions as accountingQuestions} from './questions.js';
 import {extraSubjects} from './extra-subjects.js';
-const accountingModules = [['基础理论',[1,2,3]],['资产与投资',[4,5,6,7,15]],['负债与权益',[8,9,10,11,12,16]],['金融工具与租赁',[13,14]],['收入与特殊交易',[17,18,19,20,21,22]],['报告与变更',[23,24,25]],['合并与计量',[26,27,28,29]],['政府与非营利',[30]]];
+const accountingModules = [['基础理论',[1,2,3]],['资产与投资',[4,5,6,7,15]],['负债与权益',[8,9,10,11,12,16]],['金融工具与租赁',[13,14]],['收入与特殊交易',[17,18,19,20,21,22]],['报告与会计变更',[23,24,25]],['合并与计量',[26,27,28,29]],['政府与非营利会计',[30]]];
 const subjects = {accounting:{name:'会计',chapters:accountingChapters,questions:accountingQuestions,modules:accountingModules},...extraSubjects};
 let subjectId='accounting';
 let chapters=accountingChapters, questions=accountingQuestions;

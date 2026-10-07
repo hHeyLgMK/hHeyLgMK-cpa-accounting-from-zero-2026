@@ -19,7 +19,7 @@
 
 `content/accounting/chapter4.json` 至 `chapter30.json` 保存“基础理论”之外七个学习模块的逐点零基础题。每题包含答案、解析、知识点、教材印刷页和 PDF 页。
 
-运行 `node content/accounting/build.mjs` 会校验 27 章、101 节的题号、页码、四个唯一选项、答案分布和重复题干，再生成：
+运行 `node content/accounting/build.mjs` 会校验 27 章、112 节的题号、页码、四个唯一选项、答案分布和重复题干，再生成：
 
 - `dist/accounting-expanded.js`：第 4—30 章题库；
 - `dist/questions.csv`：完整会计题库；

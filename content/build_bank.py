@@ -7,6 +7,8 @@ from expansion.sections import SECTIONS
 HERE=Path(__file__).resolve().parent
 OUT=HERE.parent/'dist'
 BANK=json.loads((HERE/'seed-bank.json').read_text())
+NUMBERS=json.loads((HERE/'question-numbers.json').read_text())
+SUPPLEMENTS=json.loads((HERE/'supplemental'/'tax-questions.json').read_text())
 OFFICIAL='https://fgk.chinatax.gov.cn/zcfgk/c100012/c5240851/content.html'
 LAST={'law':600,'finance':523,'tax':695,'audit':693}
 def pdfpage(key,page):
@@ -48,13 +50,17 @@ for key,subject in BANK.items():
         subject['chapters'][ci]['items'].append(q)
     expected=[(ci,si) for ci,ch in enumerate(SECTIONS[key]) for si in range(len(ch))]
     assert sorted(seen)==expected,(key,'missing/duplicate section',set(expected)-set(seen))
+    supplements=SUPPLEMENTS if key=='tax' else []
+    for q in supplements:
+        assert q['studySection']==SECTIONS[key][q['chapterIndex']][q['sectionNumber']-1]['label']
+        subject['chapters'][q['chapterIndex']]['items'].append(q)
     subject['questions']=[q for ch in subject['chapters'] for q in ch['items']]
-    subject['coverage']={'chapters':len(subject['chapters']),'sections':len(expected),'coveredSections':len(seen),'addedQuestions':sum(ordinal.values()),'totalQuestions':len(subject['questions']),'coverageBasis':'教材目录逐节覆盖；知识点按清单核对，不等于穷尽全部条款、例外与综合题。'}
+    subject['coverage']={'chapters':len(subject['chapters']),'sections':len(expected),'coveredSections':len(seen),'addedQuestions':sum(ordinal.values())+len(supplements),'totalQuestions':len(subject['questions']),'coverageBasis':'教材目录逐节覆盖；知识点按清单核对，不等于穷尽全部条款、例外与综合题。'}
     for ci,ch in enumerate(subject['chapters']):
         for si,sec in enumerate(ch['sections']):
             qs=[q for q in ch['items'] if q['sectionNumber']==si+1]
             pts=list(dict.fromkeys(q['knowledgePoint'] for q in qs))
-            coverage.append({'subject':key,'subjectName':subject['name'],'module':next(m[0] for m in subject['modules'] if ci+1 in m[1]),'chapter':ci+1,'chapterTitle':ch['title'],'section':sec['label'],'sectionNumber':si+1,'questions':len(qs),'addedQuestions':sum(q['edition']=='逐节扩充题' for q in qs),'knowledgePoints':pts,'questionIds':[q['id'] for q in qs],'source':page_source(key,ci,si)})
+            coverage.append({'subject':key,'subjectName':subject['name'],'module':next(m[0] for m in subject['modules'] if ci+1 in m[1]),'chapter':ci+1,'chapterTitle':ch['title'],'section':sec['label'],'sectionNumber':si+1,'questions':len(qs),'addedQuestions':sum(q['edition']!='原有起步题' for q in qs),'knowledgePoints':pts,'questionIds':[q['id'] for q in qs],'source':page_source(key,ci,si)})
         ch['coverage']={'sections':len(ch['sections']),'points':len(set((q['sectionNumber'],q['knowledgePoint']) for q in ch['items'])),'questions':len(ch['items'])}
     subject['coverage']['knowledgePoints']=sum(ch['coverage']['points'] for ch in subject['chapters'])
     rows=[]
@@ -67,15 +73,16 @@ for key,subject in BANK.items():
         else:assert q['sample']
         mod=next(m[0] for m in subject['modules'] if q['chapterIndex']+1 in m[1])
         ans=q.get('sample') or ('ABCD'[q['answer']] if q['type']=='single' else '、'.join('ABCD'[i] for i in q['answer']))
-        rows.append([q['id'],subject['name'],mod,q['source']['chapter'],q['studySection'],q['knowledgePoint'],q['level'],{'single':'单选','multi':'多选','written':'简答应用'}[q['type']],q['stem'],*(q.get('options') or ['']*4),ans,q['explain'],q['source']['printedPage'],q['source']['pdfPage'],q['source']['book'],q['source'].get('url',''),q['source'].get('note',''),q['edition']])
-        allrows.append([subject['name'],mod,q['chapterIndex']+1,q['chapterTitle'],q['studySection'],q['knowledgePoint'],q['id'],q['edition'],q['source']['printedPage'],q['source']['pdfPage'],q['source']['book'],q['source'].get('url','')])
+        number=NUMBERS[key][q['id']]
+        rows.append([number,subject['name'],mod,q['source']['chapter'],q['studySection'],q['knowledgePoint'],q['level'],{'single':'单选','multi':'多选','written':'简答应用'}[q['type']],q['stem'],*(q.get('options') or ['']*4),ans,q['explain'],q['source']['printedPage'],q['source']['pdfPage'],q['source']['book'],q['source'].get('url',''),q['source'].get('note',''),q['edition'],q['id']])
+        allrows.append([subject['name'],mod,q['chapterIndex']+1,q['chapterTitle'],q['studySection'],q['knowledgePoint'],number,q['edition'],q['source']['printedPage'],q['source']['pdfPage'],q['source']['book'],q['source'].get('url',''),q['id']])
     with (OUT/f'{key}-questions.csv').open('w',encoding='utf-8-sig',newline='') as f:
-        w=csv.writer(f,lineterminator="\n");w.writerow(['题号','科目','学习模块','章','节','知识点','难度','题型','题目','A','B','C','D','答案','解析','教材页码','PDF页码','来源','来源链接','定位说明','题目批次']);w.writerows(rows)
+        w=csv.writer(f,lineterminator="\n");w.writerow(['题号','科目','学习模块','章','节','知识点','难度','题型','题目','A','B','C','D','答案','解析','教材页码','PDF页码','来源','来源链接','定位说明','题目批次','原题号']);w.writerows(rows)
     summary[key]=subject['coverage']
 (OUT/'extra-subjects.js').write_text('export const extraSubjects = '+json.dumps(BANK,ensure_ascii=False,indent=2)+';\n')
 (OUT/'coverage.json').write_text(json.dumps({'summary':summary,'sections':coverage},ensure_ascii=False,indent=2))
 with (OUT/'knowledge-points.csv').open('w',encoding='utf-8-sig',newline='') as f:
-    w=csv.writer(f,lineterminator="\n");w.writerow(['科目','学习模块','章序','章名','知识节','知识点','对应题号','题目批次','教材阅读范围','PDF阅读范围','来源名称','来源链接']);w.writerows(allrows)
+    w=csv.writer(f,lineterminator="\n");w.writerow(['科目','学习模块','章序','章名','知识节','知识点','对应题号','题目批次','教材阅读范围','PDF阅读范围','来源名称','来源链接','原题号']);w.writerows(allrows)
 lines=['# CPA 四科学习模块与知识点清单','',
 '依据用户提供的 2026 年《经济法》《财务成本管理》《税法》《审计》教材目录和正文编排。会计题库本轮不改动。',
 '',f'四科共 70 章、340 节、{sum(s["totalQuestions"] for s in summary.values())} 道题，其中本轮新增 {sum(s["addedQuestions"] for s in summary.values())} 道。新增题以简答、辨析和计算为主，均有参考答案与解析；保留原有单选、多选和简答题。','',
@@ -85,7 +92,7 @@ lines=['# CPA 四科学习模块与知识点清单','',
 '## 练习方式','',
 '- 章节学习默认显示当前章全部题目，可切换知识节。简答题对照答案后自评。',
 '- 模拟为 45 分钟、20 题（10 单选、5 多选、5 简答），用于短练，不代表正式考试题型比例、时长和难度。',
-'- 错题连续答对 3 次移出。科目切换保留本次未完成练习并暂停模拟计时；刷新页面会重新开始该轮，已提交学习记录保留在本浏览器。',
+'- 错题连续答对 3 次移出。科目切换保留本次未完成练习并暂停模拟计时；刷新或重新打开后继续上次作答，已提交学习记录保留在本浏览器。',
 '- 每科可下载题库 CSV；知识点 CSV 提供知识点到题号的逐题映射。','',
 '## 四科规模','', '|科目|章节|知识节|知识点条目（按节去重）|题目|本轮新增|','|---|---:|---:|---:|---:|---:|']
 for key,s in BANK.items():

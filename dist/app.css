@@ -25,3 +25,20 @@
 @media(max-width:640px){.subject-picker{padding:28px 14px}.subject-picker__subtitle{margin-bottom:18px;font-size:.86rem}.subject-card{padding:20px 17px}.subject-card h2{margin-bottom:18px}.subject-grid{grid-template-columns:1fr;gap:8px}.subject-choice{min-height:50px;padding:8px 12px}.subject-choice strong{font-size:.88rem}.subject-choice span{font-size:.72rem}}
 .feedback .knowledge-line,.feedback .source-line{margin-top:12px;padding-top:10px;border-top:1px solid #b9d9c5;color:#315c49;font-size:.9rem}.feedback .source-line{margin-top:3px;padding-top:0;border-top:0}.feedback.bad .knowledge-line,.feedback.bad .source-line{border-color:#e8c9bd;color:#744f43}
 .section-picker{margin-top:13px}.section-picker[hidden]{display:none}#sectionSelect{width:100%;border:1px solid #cbd9e7;border-radius:6px;background:#f9fbfe;padding:10px 8px;color:#183f67;font-size:.88rem}.sidebar.is-collapsed .section-picker{display:none}@media(max-width:700px){.sidebar.is-collapsed .section-picker:not([hidden]){display:block}}
+.q-chip{min-width:76px;padding:0 5px;font-size:.72rem;font-variant-numeric:tabular-nums}
+.history-button{border:1px solid #d8edff98;border-radius:5px;background:#ffffff1d;color:#fff;padding:6px 10px;font-size:.81rem;white-space:nowrap}
+.history-button:hover{background:#ffffff32}
+.modal:has(.history-list){width:min(100%,760px);max-height:min(88vh,850px);display:flex;flex-direction:column}
+.modal:has(.history-list) #modalBody{overflow:auto;min-height:0}
+.history-note{color:#698099;margin:5px 0 16px}
+.history-list{display:grid;gap:10px;padding-bottom:4px}
+.history-card,.history-question{width:100%;text-align:left;background:#f8fbff;border:1px solid #d7e5f1;border-radius:7px;padding:12px 14px;color:#274b6b}
+.history-card:hover{border-color:#2580cd;background:#edf7ff}
+.history-card strong,.history-card span,.history-question strong{display:block;line-height:1.55}
+.history-card span{font-size:.81rem;color:#617d97}
+.history-question p{margin:7px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.history-question .history-answer{color:#27567b}
+.history-question .history-explain{border-top:1px solid #dbe8f1;padding-top:8px}
+.history-back{border:0;background:none;color:#176bb8;padding:0 0 5px;font-weight:600}
+@media(max-width:700px){.top-actions{margin-left:auto}.history-button{padding:5px 7px;font-size:.74rem}.modal:has(.history-list){max-height:90vh}}
+@media(max-width:390px){.top-actions{gap:4px}.top-actions .timer{font-size:.71rem}}

@@ -1,6 +1,7 @@
 import {readFile, readdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {questionNumbers} from '../../dist/question-numbers.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../..');
@@ -75,18 +76,19 @@ for (let n = 4; n <= 30; n++) {
 await writeFile(path.join(dist,'accounting-expanded.js'), `export const expandedAccountingQuestions = ${JSON.stringify(questions,null,2)};\n`, 'utf8');
 const {questions:all} = await import(pathToFileURL(path.join(dist,'questions.js')).href + '?build=' + Date.now());
 const accounting = all;
-const headers = ['题号','模块','章序','章节','题型','难度','题干','选项A','选项B','选项C','选项D','正确答案','参考作答','解析','知识点','教材章节','教材节','教材页','PDF页'];
+const headers = ['题号','模块','章序','章节','题型','难度','题干','选项A','选项B','选项C','选项D','正确答案','参考作答','解析','知识点','教材章节','教材节','教材页','PDF页','原题号'];
 const typeLabels = {single:'单选',multi:'多选',written:'简答'};
 const csvQuote = value => `"${String(value ?? '').replaceAll('"','""')}"`;
 const rows = accounting.map(q => {
   const answerIndices = q.type === 'single' ? [q.answer] : q.type === 'multi' ? q.answer : [];
-  return [q.id,moduleFor(q.chapterIndex+1),q.chapterIndex+1,q.chapterTitle,typeLabels[q.type],q.level,q.stem,
+  if (!questionNumbers.accounting[q.id]) fail(q.id, '请先补充统一题号映射');
+  return [questionNumbers.accounting[q.id],moduleFor(q.chapterIndex+1),q.chapterIndex+1,q.chapterTitle,typeLabels[q.type],q.level,q.stem,
     ...Array.from({length:4}, (_,i) => q.options?.[i] ?? ''),
     answerIndices.map(i => 'ABCD'[i]).join('、'),q.sample || '',q.explain,q.knowledgePoint || '',
-    q.source?.chapter || '',q.source?.section || '',q.source?.printedPage || '',q.source?.pdfPage || ''];
+    q.source?.chapter || '',q.source?.section || '',q.source?.printedPage || '',q.source?.pdfPage || '',q.id];
 });
-await writeFile(path.join(dist,'questions.csv'), '\ufeff'+[headers,...rows].map(row=>row.map(csvQuote).join(',')).join('\r\n')+'\r\n','utf8');
+await writeFile(path.join(dist,'questions.csv'), '\ufeff'+[headers,...rows].map(row=>row.map(csvQuote).join(',')).join('\n')+'\n','utf8');
 const coverageHeaders = ['模块','章序','章节','教材节','知识点','题号','教材页','PDF页'];
 const coverageRows = accounting.filter(q=>q.source).map(q=>[moduleFor(q.chapterIndex+1),q.chapterIndex+1,q.chapterTitle,q.source.section,q.knowledgePoint,q.id,q.source.printedPage,q.source.pdfPage]);
-await writeFile(path.join(dist,'accounting-coverage.csv'), '\ufeff'+[coverageHeaders,...coverageRows].map(row=>row.map(csvQuote).join(',')).join('\r\n')+'\r\n','utf8');
+await writeFile(path.join(dist,'accounting-coverage.csv'), '\ufeff'+[coverageHeaders,...coverageRows].map(row=>row.map(csvQuote).join(',')).join('\n')+'\n','utf8');
 console.log(JSON.stringify({total:accounting.length,expanded:questions.length,chapters:27,missing:[...Array(27)].map((_,i)=>i+4).filter(n=>!available.has(`chapter${n}.json`))}));

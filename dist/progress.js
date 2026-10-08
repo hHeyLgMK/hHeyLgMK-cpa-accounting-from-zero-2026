@@ -7,6 +7,7 @@ export function writeProgress(storage, key, active, previousSubjects) {
     const s = state.session;
     if (!s) continue;
     sessions[id] = {
+      id:s.id, startedAt:s.startedAt,
       chapterIndex:state.chapterIndex, sectionName:state.sectionName,
       mode:s.mode, ids:s.items.map(q => q.id), index:s.index,
       answers:s.answers, orders:s.orders,
@@ -41,7 +42,7 @@ export function readProgress(storage, key, subjects) {
     if (value.mode === 'learn' && items.some(q => q.chapterIndex !== value.chapterIndex ||
         (sectionName !== '__all__' && (q.studySection || q.source?.section) !== sectionName))) continue;
     const answers = {}, orders = {};
-    const finished = value.mode === 'mock' && value.finished === true;
+    const finished = ['learn','mock'].includes(value.mode) && value.finished === true;
     for (const q of items) {
       const order = value.orders?.[q.id];
       if (q.options) {
@@ -61,6 +62,8 @@ export function readProgress(storage, key, subjects) {
         recorded:a.recorded === true && (submitted || finished)};
     }
     const session = {mode:value.mode, items,
+      id:typeof value.id === 'string' ? value.id : undefined,
+      startedAt:typeof value.startedAt === 'string' ? value.startedAt : undefined,
       index:Number.isInteger(value.index) ? Math.max(0,Math.min(value.index,items.length-1)) : 0,
       answers, orders, finished, showResult:finished && value.showResult === true,
       seconds:Number.isFinite(value.seconds) ? Math.max(0,Math.min(2700,Math.floor(value.seconds))) : 2700};

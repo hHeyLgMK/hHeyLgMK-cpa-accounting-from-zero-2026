@@ -1,26 +1,48 @@
-# 四科题库维护
+# 题库维护
 
-运行 `python3 content/build_bank.py` 可重新生成四科题库、CSV 和覆盖清单。脚本不会修改会计的 questions.js、basic-theory.js 或 questions.csv。
+当前运行时题库来自六科 Android-3 APK，并保留仓库原有题稿与构建流程。导入来源及哈希见 `android-import.json`。
 
-- seed-bank.json：扩充前的 280 道题，保留题号、选项、答案与来源，兼容既有记录。
-- expansion/*.txt：按 @章.节 分组的新增题，字段为 知识点|题目|参考答案|解析。
-- expansion/sections.py：2026 年四科教材目录转录，合计 70 章、340 节。
-- catalog.py：学习模块和章节映射。
+## 可编辑题稿
 
-新增题号按科目、章、节、节内序号组成。发布后不要改变既有题的顺序或复用题号；新增题追加到相应节末。
+- `seed-bank.json`：经济法、财管、税法、审计原有 280 题。
+- `expansion/*.txt`：四科逐节扩充题，按 `@章.节` 分组，字段为 `知识点|题目|参考答案|解析`。
+- `expansion/sections.py`、`catalog.py`：四科知识节目录和模块映射。
+- `supplemental/tax-questions.json`：新版 APK 新增的 245 道税法题，保留完整来源。
+- `supplemental/strategy.json`：战略完整 8 章、29 节、435 题，题目维护在章节 `items` 中。
+- `question-numbers.json`：六科统一显示题号源表。内部题号用于浏览器数据兼容，显示题号用于界面与 CSV；两者不能复用或重排。
+- `accounting/chapter4.json` 至 `chapter30.json`：会计扩展题。
+- `../dist/basic-theory.js`：会计第 1—3 章基础理论题。
 
-新增题的来源是所属节阅读范围，不是逐题精确页码。税法扫描缺失印刷页 628—629；630 页起 PDF 偏移从 +9 改为 +7。三个信用管理题单列国家税务总局公告2025年第12号链接，不虚构扫描页。
+新题追加到所属章/节，并在题号源表分配未使用的新显示编号。所有旧题号保持原意，避免破坏旧统计、错题和进度。
 
-本次覆盖口径为每节有题，并提供实际知识点清单；不能据此声称穷尽所有法条细则、例外或跨章综合考法。新增题是原创简答、辨析与计算练习，非官方真题。
+## 构建
 
-验证：340 节均有新增题、1401 个四科题号唯一、CSV 与题库逐题对应；原有 280 题全部原字段一致；会计三个内容资产 SHA-256 不变。DOM 与状态测试覆盖各节筛选、五科入口、单多选及简答评分、错题移出、选项打乱、模拟暂停恢复、来源链接和下载入口。未进行浏览器视觉截图验证。
+在仓库根目录执行：
 
-## 会计题库维护
+```powershell
+python -X utf8 content/build_bank.py
+python -X utf8 content/build_strategy.py
+node content/accounting/build.mjs
+.\windows\build.ps1 -NodePath node
+node --test tests/progress.test.mjs tests/app-resume.test.mjs tests/bank.test.mjs
+```
 
-`content/accounting/chapter4.json` 至 `chapter30.json` 保存“基础理论”之外七个学习模块的逐点零基础题。每题包含答案、解析、知识点、教材印刷页和 PDF 页。
+`build_bank.py` 合并种子、TXT 和税法补充 JSON，生成四科模块、CSV、覆盖 JSON 与知识点清单。
+`build_strategy.py` 从战略 JSON 生成 `strategy.js`、战略 CSV 和 `question-numbers.js`。
+会计脚本校验题稿并生成扩展模块、CSV 和教材位置覆盖表。不要使用 `--allow-partial` 进行正式构建。
 
-运行 `node content/accounting/build.mjs` 会校验 27 章、112 节的题号、页码、四个唯一选项、答案分布和重复题干，再生成：
+战略 Markdown 清单和税法覆盖核对说明从 APK 提取，题库修改后需人工同步这两个文档。
 
-- `dist/accounting-expanded.js`：第 4—30 章题库；
-- `dist/questions.csv`：完整会计题库；
-- `dist/accounting-coverage.csv`：模块、章节、节、知识点与教材位置清单。
+税法扫描缺少印刷页 628—629，第 630 页起 PDF 偏移由 +9 改为 +7。相关信用管理题使用官方补充来源，不能虚构不存在的 PDF 页。知识节覆盖不等于全部细则与综合考法已覆盖。
+
+## 新 APK 导入
+
+```powershell
+python -X utf8 content/import-apk.py path/to/app.apk work/apk-import
+```
+
+导入器针对当前 APK 的内联模块格式，只读取 ZIP 中 `assets/index.html`；输出网页模块、CSS 和离线下载资源以及哈希清单。遇到不同结构应先检查并更新导入器。不会执行 APK 或脚本。
+
+提取后的应用代码尚无本仓库的退出续答合并，应先对比题库、新功能和差异，再更新题稿与运行时模块。合并时必须保留 `progress.js` 的恢复路径、历史会话 ID、已完成学习组状态和重复计分防护。
+
+本次六科共 4,412 题，108 章、496 节；与 APK 的题干、答案、解析、来源及 CSV 数据逐项一致。浏览器界面实测未完成，自动测试和 EXE 内嵌网页校验通过。

@@ -6,7 +6,7 @@ import {gzipSync} from 'node:zlib';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.resolve(process.argv[2] || path.join(root,'work','windows-build'));
 const dist = path.join(root,'dist');
-const read = name => fs.readFileSync(path.join(dist,name),'utf8');
+const read = name => fs.readFileSync(path.join(dist,name),'utf8').replace(/\r\n/g,'\n');
 function moduleBody(name) {
   return read(name).replace(/^import .*;\r?\n/gm,'').replace(/^export /gm,'');
 }
@@ -18,12 +18,14 @@ const scripts = [
   "const {expandedAccountingQuestions} = "+wrap('accounting-expanded.js','expandedAccountingQuestions')+';',
   "const {chapters:accountingChapters, questions:accountingQuestions} = "+wrap('questions.js','chapters,questions')+';',
   "const {extraSubjects} = "+wrap('extra-subjects.js','extraSubjects')+';',
+  "const {strategySubject} = "+wrap('strategy.js','strategySubject')+';',
+  "const {questionNumbers} = "+wrap('question-numbers.js','questionNumbers')+';',
   "const {readProgress,writeProgress} = "+wrap('progress.js','readProgress,writeProgress')+';',
   moduleBody('app.js')
 ].join('\n');
 const downloads = {};
 for (const name of fs.readdirSync(dist).filter(n => /\.(csv|md)$/.test(n))) {
-  downloads[name] = fs.readFileSync(path.join(dist,name)).toString('base64');
+  downloads[name] = Buffer.from(read(name),'utf8').toString('base64');
 }
 const downloadScript = String.raw`
 const offlineDownloads = ${JSON.stringify(downloads)};

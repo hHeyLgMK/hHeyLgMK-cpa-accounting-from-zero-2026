@@ -1,0 +1,45 @@
+{
+  "source": "CPA刷题库_六科离线版_Android-3.apk",
+  "apkSha256": "9622a66745aa13925508063c2e31dc73c69ac75eb6941696a9b349fcf145f506",
+  "asset": "assets/index.html",
+  "questionCounts": {
+    "accounting": 2331,
+    "law": 305,
+    "finance": 393,
+    "tax": 554,
+    "audit": 394,
+    "strategy": 435
+  },
+  "totalQuestions": 4412,
+  "importedAssetSha256": {
+    "accounting-expanded.js": "6494c5520ef742ab285d5f3f21c4187030e82b9eb359c23b162031a3fd0c50ea",
+    "app.css": "92536f0b606b0c651af950ee109dac2c96d5de10779e3c133f21e2ccf6ec1bab",
+    "app.js": "e2e1952e2476cd7e8c1bfaf0e376e193fb420ac4736e5df035b6a1fb17dbfb1d",
+    "audit-questions.csv": "98655b64a52419aaa42db41cac5cac6f6985c7bdf96fa8e3ec22f6281db7ed56",
+    "basic-theory.js": "2ee47166a276a2220a81cf1a660824f93a3bb780352a335f208557c8e1345ce4",
+    "extra-subjects.js": "8c02369c404c5bf04ebd95ee04cfcf4a593c36d8fb04d36c98e622ebf7139d64",
+    "finance-questions.csv": "956b2903e084375c0e3718d3647d1cd08036955f58b86575426b505229758ede",
+    "index.html": "9b52fd559b7360364fcbece4be1b8531dc6c71153d8b86cd511e2a82b7209913",
+    "knowledge-points.csv": "7cf1a2128ce628b82401fd81bc2f50389aa84906a5c2c4f4e15c6a5d8098c6cb",
+    "law-questions.csv": "0ce45c3401134d88ee9b14dae1035d01042b0a72e2743f8ce40312723690a0e3",
+    "question-numbers.js": "abe9511796749b9a2dc9155fe766ba86e1bdbb84077d067f8adfd1b073908cc9",
+    "questions.csv": "86a99ae8a13cd9f1326c03ad80b2cc19212d52e61010c892e448fb5201b3eaf4",
+    "questions.js": "4acb1cb6ea966f76532f2ae78156da7a543910eeaaaf9f3f44e6f0e76124ae66",
+    "strategy-coverage.csv": "b036d46855e6c6234fd5459fc955eb78be646decdf24c7c828c32ed02de9134e",
+    "strategy-guide.md": "b28f08ca94c5369c9524c9f89d50ef5e9db30aa2225000d311ead703abd488dd",
+    "strategy-questions.csv": "cc78fee41e4bec05900acdf3f517f275d98891d7af122c5838af5d5dfe1b1776",
+    "strategy.js": "bc858c9816e13fa195f923c0c89f7d7e92c98fee20fe1c836bf189720aab7a12",
+    "study-guide.md": "4e9131c95e53338cd0dee228ff61389ae374294d9b3556a7499e705ac2b262d7",
+    "tax-coverage-audit.md": "e3dcc2af4bfd93117de7ba0a794cfe764319ea5d4309a7e2415cc4142f3dcdae",
+    "tax-questions.csv": "35637c3bcc8b04ba7370bdd72f6e06ef22d56d746f8690b96fb651a437dd17b5"
+  },
+  "merge": "网页版与 Windows 版本保留自动保存和恢复当前作答；加入新版练习历史与本组提交。",
+  "questionDataSha256": {
+    "accounting": "45554962253a53ba9f09c05bb04f90d331e65ef339f5c1a8e95dbeff40628a98",
+    "law": "a262d7d16d8f709afce3bf37cdf5a22a090ad54c3c846b51edb2143140dbdbf0",
+    "finance": "c6143c6a9e5117804053e8598507cefd38ccd123467f3c590a41761d46b0283e",
+    "tax": "8eb4f1576474c83b0744269b6921f542801f26df77dca7e9514d77cc633ca296",
+    "audit": "2167bfd94b6d070063c18ec66cd72c76f9e426d20654b90550174486bf1ce7f0",
+    "strategy": "c5342c10a6b18cef90c5179db9b6267a9356b3f3a77556caa0f3287b805aa841"
+  }
+}

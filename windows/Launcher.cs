@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Windows.Forms;
 
 [assembly: AssemblyTitle("CPA刷题库 Windows离线版")]
-[assembly: AssemblyDescription("五科题库，自动保存并恢复上次作答")]
-[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyDescription("六科题库，练习历史，自动保存并恢复上次作答")]
+[assembly: AssemblyVersion("1.2.0.0")]
 
 internal static class Launcher
 {

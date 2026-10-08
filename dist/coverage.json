@@ -22,10 +22,10 @@
       "chapters": 14,
       "sections": 74,
       "coveredSections": 74,
-      "addedQuestions": 253,
-      "totalQuestions": 309,
+      "addedQuestions": 498,
+      "totalQuestions": 554,
       "coverageBasis": "教材目录逐节覆盖；知识点按清单核对，不等于穷尽全部条款、例外与综合题。",
-      "knowledgePoints": 308
+      "knowledgePoints": 546
     },
     "audit": {
       "chapters": 24,
@@ -4941,8 +4941,8 @@
       "chapterTitle": "税法总论",
       "section": "第一节 税法概念",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 9,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "税收目的",
         "税法调整对象",
@@ -4950,7 +4950,9 @@
         "依法征纳",
         "税收基本特征",
         "税收法律关系",
-        "税法与其他法律"
+        "税法与其他法律",
+        "税收法律关系的主体",
+        "税法与民法的关系"
       ],
       "questionIds": [
         "tax-01-01",
@@ -4959,7 +4961,9 @@
         "tax-01-04",
         "tax-full-01-01-001",
         "tax-full-01-01-002",
-        "tax-full-01-01-003"
+        "tax-full-01-01-003",
+        "tax-full-01-01-004",
+        "tax-full-01-01-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -4979,17 +4983,21 @@
       "chapterTitle": "税法总论",
       "section": "第二节 税法原则",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "税收法定",
         "税法适用原则",
-        "实质课税"
+        "实质课税",
+        "新法旧法与特别法",
+        "程序从新原则"
       ],
       "questionIds": [
         "tax-full-01-02-001",
         "tax-full-01-02-002",
-        "tax-full-01-02-003"
+        "tax-full-01-02-003",
+        "tax-full-01-02-004",
+        "tax-full-01-02-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5009,21 +5017,25 @@
       "chapterTitle": "税法总论",
       "section": "第三节 税法（种）要素",
       "sectionNumber": 3,
-      "questions": 5,
-      "addedQuestions": 5,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "纳税人与负税人",
         "比例、累进与定额税率",
         "超额累进与全额累进",
         "起征点与免征额",
-        "纳税期限与地点"
+        "纳税期限与地点",
+        "税目与征税对象",
+        "纳税环节"
       ],
       "questionIds": [
         "tax-full-01-03-001",
         "tax-full-01-03-002",
         "tax-full-01-03-003",
         "tax-full-01-03-004",
-        "tax-full-01-03-005"
+        "tax-full-01-03-005",
+        "tax-full-01-03-006",
+        "tax-full-01-03-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5043,15 +5055,19 @@
       "chapterTitle": "税法总论",
       "section": "第四节 税收立法与我国税法体系",
       "sectionNumber": 4,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "税收立法权限",
-        "现行税法体系"
+        "现行税法体系",
+        "税收立法层级",
+        "立法程序与现行税制"
       ],
       "questionIds": [
         "tax-full-01-04-001",
-        "tax-full-01-04-002"
+        "tax-full-01-04-002",
+        "tax-full-01-04-003",
+        "tax-full-01-04-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5071,15 +5087,19 @@
       "chapterTitle": "税法总论",
       "section": "第五节 税收执法",
       "sectionNumber": 5,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "税收征管范围",
-        "税收执法权限"
+        "税收执法权限",
+        "税务机关与海关分工",
+        "税收收入归属"
       ],
       "questionIds": [
         "tax-full-01-05-001",
-        "tax-full-01-05-002"
+        "tax-full-01-05-002",
+        "tax-full-01-05-003",
+        "tax-full-01-05-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5099,15 +5119,19 @@
       "chapterTitle": "税法总论",
       "section": "第六节 税务权利与义务",
       "sectionNumber": 6,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "纳税人权利",
-        "扣缴义务"
+        "扣缴义务",
+        "纳税人救济权利",
+        "扣缴义务人的独立责任"
       ],
       "questionIds": [
         "tax-full-01-06-001",
-        "tax-full-01-06-002"
+        "tax-full-01-06-002",
+        "tax-full-01-06-003",
+        "tax-full-01-06-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5127,15 +5151,19 @@
       "chapterTitle": "税法总论",
       "section": "第七节 国际税收关系",
       "sectionNumber": 7,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "国际重复征税",
-        "避税与逃税"
+        "避税与逃税",
+        "法律性与经济性重复征税",
+        "税收协定与国内法"
       ],
       "questionIds": [
         "tax-full-01-07-001",
-        "tax-full-01-07-002"
+        "tax-full-01-07-002",
+        "tax-full-01-07-003",
+        "tax-full-01-07-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5155,8 +5183,8 @@
       "chapterTitle": "增值税法",
       "section": "第一节 征税范围",
       "sectionNumber": 1,
-      "questions": 9,
-      "addedQuestions": 5,
+      "questions": 13,
+      "addedQuestions": 9,
       "knowledgePoints": [
         "增值税范围",
         "进口征收机关",
@@ -5166,7 +5194,11 @@
         "有偿销售",
         "视同应税交易",
         "非应税交易",
-        "应税交易分类"
+        "应税交易分类",
+        "应税交易的地域判断",
+        "无偿交易与视同应税",
+        "非应税交易辨析",
+        "混合交易拆分"
       ],
       "questionIds": [
         "tax-02-01",
@@ -5177,7 +5209,11 @@
         "tax-full-02-01-002",
         "tax-full-02-01-003",
         "tax-full-02-01-004",
-        "tax-full-02-01-005"
+        "tax-full-02-01-005",
+        "tax-full-02-01-006",
+        "tax-full-02-01-007",
+        "tax-full-02-01-008",
+        "tax-full-02-01-009"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5197,17 +5233,21 @@
       "chapterTitle": "增值税法",
       "section": "第二节 纳税人和扣缴义务人",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "纳税人分类",
         "一般纳税人登记",
-        "境外纳税人扣缴"
+        "境外纳税人扣缴",
+        "一般纳税人登记后计税",
+        "境外单位扣缴计税"
       ],
       "questionIds": [
         "tax-full-02-02-001",
         "tax-full-02-02-002",
-        "tax-full-02-02-003"
+        "tax-full-02-02-003",
+        "tax-full-02-02-004",
+        "tax-full-02-02-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5227,19 +5267,25 @@
       "chapterTitle": "增值税法",
       "section": "第三节 税率",
       "sectionNumber": 3,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "增值税税率结构",
         "不同交易分别核算",
         "一项交易主要业务",
-        "零税率与免税"
+        "零税率与免税",
+        "低税率货物边界",
+        "零税率跨境服务范围",
+        "征收率与税率区分"
       ],
       "questionIds": [
         "tax-full-02-03-001",
         "tax-full-02-03-002",
         "tax-full-02-03-003",
-        "tax-full-02-03-004"
+        "tax-full-02-03-004",
+        "tax-full-02-03-005",
+        "tax-full-02-03-006",
+        "tax-full-02-03-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5259,8 +5305,8 @@
       "chapterTitle": "增值税法",
       "section": "第四节 一般计税方法应纳税额的计算",
       "sectionNumber": 4,
-      "questions": 8,
-      "addedQuestions": 8,
+      "questions": 16,
+      "addedQuestions": 16,
       "knowledgePoints": [
         "价税分离",
         "一般计税公式",
@@ -5269,7 +5315,15 @@
         "不得抵扣用途",
         "进项税额转出",
         "留抵与应纳税额",
-        "加计抵减"
+        "加计抵减",
+        "价外费用与销售额",
+        "折扣折让区分",
+        "以旧换新销售额",
+        "进项抵扣凭证",
+        "农产品进项计算",
+        "兼营不得抵扣用途",
+        "异常凭证与进项转出",
+        "期末留抵的边界"
       ],
       "questionIds": [
         "tax-full-02-04-001",
@@ -5279,7 +5333,15 @@
         "tax-full-02-04-005",
         "tax-full-02-04-006",
         "tax-full-02-04-007",
-        "tax-full-02-04-008"
+        "tax-full-02-04-008",
+        "tax-full-02-04-009",
+        "tax-full-02-04-010",
+        "tax-full-02-04-011",
+        "tax-full-02-04-012",
+        "tax-full-02-04-013",
+        "tax-full-02-04-014",
+        "tax-full-02-04-015",
+        "tax-full-02-04-016"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5299,17 +5361,23 @@
       "chapterTitle": "增值税法",
       "section": "第五节 简易计税方法",
       "sectionNumber": 5,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "简易计税公式",
         "一般纳税人简易计税",
-        "简易计税选择"
+        "简易计税选择",
+        "简易计税不得抵扣",
+        "减按征收率辨析",
+        "中外合作开采石油资源"
       ],
       "questionIds": [
         "tax-full-02-05-001",
         "tax-full-02-05-002",
-        "tax-full-02-05-003"
+        "tax-full-02-05-003",
+        "tax-full-02-05-004",
+        "tax-full-02-05-005",
+        "tax-full-02-05-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5329,17 +5397,23 @@
       "chapterTitle": "增值税法",
       "section": "第六节 进口环节增值税的征收",
       "sectionNumber": 6,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "进口组成计税价格",
         "进口增值税计算",
-        "跨境电商零售进口"
+        "跨境电商零售进口",
+        "进口完税价格构成",
+        "进口增值税算例",
+        "跨境电商零售进口边界"
       ],
       "questionIds": [
         "tax-full-02-06-001",
         "tax-full-02-06-002",
-        "tax-full-02-06-003"
+        "tax-full-02-06-003",
+        "tax-full-02-06-004",
+        "tax-full-02-06-005",
+        "tax-full-02-06-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5359,21 +5433,31 @@
       "chapterTitle": "增值税法",
       "section": "第七节 出口货物和跨境销售服务、无形资产增值税政策",
       "sectionNumber": 7,
-      "questions": 5,
-      "addedQuestions": 5,
+      "questions": 10,
+      "addedQuestions": 10,
       "knowledgePoints": [
         "出口退免税基本政策",
         "免抵退与免退",
         "征退税率差",
         "出口资料管理",
-        "跨境服务与海外仓"
+        "跨境服务与海外仓",
+        "出口退税资格条件",
+        "免抵退计算顺序",
+        "出口免税与零税率辨析",
+        "出口征税情形",
+        "海外仓出口时间"
       ],
       "questionIds": [
         "tax-full-02-07-001",
         "tax-full-02-07-002",
         "tax-full-02-07-003",
         "tax-full-02-07-004",
-        "tax-full-02-07-005"
+        "tax-full-02-07-005",
+        "tax-full-02-07-006",
+        "tax-full-02-07-007",
+        "tax-full-02-07-008",
+        "tax-full-02-07-009",
+        "tax-full-02-07-010"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5393,17 +5477,23 @@
       "chapterTitle": "增值税法",
       "section": "第八节 税收优惠",
       "sectionNumber": 8,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "免税与起征点",
         "即征即退",
-        "优惠分别核算"
+        "优惠分别核算",
+        "起征点与免税额",
+        "免税与进项抵扣",
+        "即征即退顺序"
       ],
       "questionIds": [
         "tax-full-02-08-001",
         "tax-full-02-08-002",
-        "tax-full-02-08-003"
+        "tax-full-02-08-003",
+        "tax-full-02-08-004",
+        "tax-full-02-08-005",
+        "tax-full-02-08-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5423,19 +5513,29 @@
       "chapterTitle": "增值税法",
       "section": "第九节 征收管理",
       "sectionNumber": 9,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 9,
+      "addedQuestions": 9,
       "knowledgePoints": [
         "纳税义务发生时间",
         "预缴与最终申报",
         "发票管理",
-        "申报调整"
+        "申报调整",
+        "预收款与纳税义务时点",
+        "建筑服务预缴",
+        "红字发票调整",
+        "增值税申报表销项与进项",
+        "免税销售申报"
       ],
       "questionIds": [
         "tax-full-02-09-001",
         "tax-full-02-09-002",
         "tax-full-02-09-003",
-        "tax-full-02-09-004"
+        "tax-full-02-09-004",
+        "tax-full-02-09-005",
+        "tax-full-02-09-006",
+        "tax-full-02-09-007",
+        "tax-full-02-09-008",
+        "tax-full-02-09-009"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5455,8 +5555,8 @@
       "chapterTitle": "消费税法",
       "section": "第一节 纳税人与税目、税率",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 10,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "消费税范围",
         "复合计税",
@@ -5464,7 +5564,10 @@
         "税目意识",
         "消费税税目",
         "消费税纳税环节",
-        "税率形式"
+        "税率形式",
+        "消费税应税品范围",
+        "卷烟批发环节",
+        "金银首饰零售"
       ],
       "questionIds": [
         "tax-03-01",
@@ -5473,7 +5576,10 @@
         "tax-03-04",
         "tax-full-03-01-001",
         "tax-full-03-01-002",
-        "tax-full-03-01-003"
+        "tax-full-03-01-003",
+        "tax-full-03-01-004",
+        "tax-full-03-01-005",
+        "tax-full-03-01-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5493,17 +5599,23 @@
       "chapterTitle": "消费税法",
       "section": "第二节 计税依据",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "消费税与增值税价款",
         "组成计税价格",
-        "包装物与特殊计价"
+        "包装物与特殊计价",
+        "从价计税销售额",
+        "包装物押金",
+        "自产自用组成计税价"
       ],
       "questionIds": [
         "tax-full-03-02-001",
         "tax-full-03-02-002",
-        "tax-full-03-02-003"
+        "tax-full-03-02-003",
+        "tax-full-03-02-004",
+        "tax-full-03-02-005",
+        "tax-full-03-02-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5523,15 +5635,19 @@
       "chapterTitle": "消费税法",
       "section": "第三节 应纳税额的计算",
       "sectionNumber": 3,
-      "questions": 6,
-      "addedQuestions": 6,
+      "questions": 10,
+      "addedQuestions": 10,
       "knowledgePoints": [
         "从价消费税计算",
         "复合消费税计算",
         "委托加工代收代缴",
         "进口消费税",
         "已纳税额扣除",
-        "特殊环节与出口"
+        "特殊环节与出口",
+        "复合税率算例",
+        "委托加工收回后销售",
+        "进口消费税组成计税价",
+        "已纳消费税扣除范围"
       ],
       "questionIds": [
         "tax-full-03-03-001",
@@ -5539,7 +5655,11 @@
         "tax-full-03-03-003",
         "tax-full-03-03-004",
         "tax-full-03-03-005",
-        "tax-full-03-03-006"
+        "tax-full-03-03-006",
+        "tax-full-03-03-007",
+        "tax-full-03-03-008",
+        "tax-full-03-03-009",
+        "tax-full-03-03-010"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5559,15 +5679,21 @@
       "chapterTitle": "消费税法",
       "section": "第四节 征收管理",
       "sectionNumber": 4,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "消费税申报与地点",
-        "消费税退补税"
+        "消费税退补税",
+        "移送使用的纳税时点",
+        "出口消费税退还",
+        "成品油涉税产品检测"
       ],
       "questionIds": [
         "tax-full-03-04-001",
-        "tax-full-03-04-002"
+        "tax-full-03-04-002",
+        "tax-full-03-04-003",
+        "tax-full-03-04-004",
+        "tax-full-03-04-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5587,15 +5713,17 @@
       "chapterTitle": "企业所得税法",
       "section": "第一节 纳税人、征税对象与税率",
       "sectionNumber": 1,
-      "questions": 6,
-      "addedQuestions": 2,
+      "questions": 8,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "适用范围",
         "居民企业判断",
         "居民企业应税所得范围",
         "纳税人区分",
         "居民与非居民税负范围",
-        "企业所得税基本税率"
+        "企业所得税基本税率",
+        "实际管理机构",
+        "境内机构场所"
       ],
       "questionIds": [
         "tax-04-01",
@@ -5603,7 +5731,9 @@
         "tax-04-03",
         "tax-04-04",
         "tax-full-04-01-001",
-        "tax-full-04-01-002"
+        "tax-full-04-01-002",
+        "tax-full-04-01-003",
+        "tax-full-04-01-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5623,8 +5753,8 @@
       "chapterTitle": "企业所得税法",
       "section": "第二节 应纳税所得额",
       "sectionNumber": 2,
-      "questions": 10,
-      "addedQuestions": 10,
+      "questions": 17,
+      "addedQuestions": 17,
       "knowledgePoints": [
         "应纳税所得额框架",
         "收入确认",
@@ -5635,7 +5765,14 @@
         "广告宣传费",
         "公益捐赠",
         "不得扣除项目",
-        "亏损弥补"
+        "亏损弥补",
+        "收入总额与应税收入",
+        "不征税收入对应费用",
+        "分期收款收入时点",
+        "业务招待费双限额",
+        "公益捐赠跨年结转",
+        "职工教育经费",
+        "以前年度亏损"
       ],
       "questionIds": [
         "tax-full-04-02-001",
@@ -5647,7 +5784,14 @@
         "tax-full-04-02-007",
         "tax-full-04-02-008",
         "tax-full-04-02-009",
-        "tax-full-04-02-010"
+        "tax-full-04-02-010",
+        "tax-full-04-02-011",
+        "tax-full-04-02-012",
+        "tax-full-04-02-013",
+        "tax-full-04-02-014",
+        "tax-full-04-02-015",
+        "tax-full-04-02-016",
+        "tax-full-04-02-017"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5667,17 +5811,27 @@
       "chapterTitle": "企业所得税法",
       "section": "第三节 资产的税务处理",
       "sectionNumber": 3,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 8,
+      "addedQuestions": 8,
       "knowledgePoints": [
         "固定资产税务折旧",
         "无形资产与研发",
-        "存货与投资资产"
+        "存货与投资资产",
+        "固定资产计税基础",
+        "不得计提折旧资产",
+        "长期待摊费用",
+        "生产性生物资产折旧",
+        "投资资产转让成本"
       ],
       "questionIds": [
         "tax-full-04-03-001",
         "tax-full-04-03-002",
-        "tax-full-04-03-003"
+        "tax-full-04-03-003",
+        "tax-full-04-03-004",
+        "tax-full-04-03-005",
+        "tax-full-04-03-006",
+        "tax-full-04-03-007",
+        "tax-full-04-03-008"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5697,15 +5851,19 @@
       "chapterTitle": "企业所得税法",
       "section": "第四节 资产损失的所得税处理",
       "sectionNumber": 4,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "资产损失证据",
-        "实际与法定资产损失"
+        "实际与法定资产损失",
+        "资产损失年度",
+        "损失留存资料"
       ],
       "questionIds": [
         "tax-full-04-04-001",
-        "tax-full-04-04-002"
+        "tax-full-04-04-002",
+        "tax-full-04-04-003",
+        "tax-full-04-04-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5725,17 +5883,21 @@
       "chapterTitle": "企业所得税法",
       "section": "第五节 企业重组的所得税处理",
       "sectionNumber": 5,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "重组一般处理",
         "重组特殊处理",
-        "递延与免税"
+        "递延与免税",
+        "重组特殊处理资格",
+        "资产收购计税基础"
       ],
       "questionIds": [
         "tax-full-04-05-001",
         "tax-full-04-05-002",
-        "tax-full-04-05-003"
+        "tax-full-04-05-003",
+        "tax-full-04-05-004",
+        "tax-full-04-05-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5755,8 +5917,8 @@
       "chapterTitle": "企业所得税法",
       "section": "第六节 税收优惠",
       "sectionNumber": 6,
-      "questions": 7,
-      "addedQuestions": 7,
+      "questions": 15,
+      "addedQuestions": 15,
       "knowledgePoints": [
         "高新技术优惠",
         "小型微利企业条件",
@@ -5764,7 +5926,15 @@
         "研发加计扣除",
         "残疾人工资加计扣除",
         "减计收入与税额抵免",
-        "优惠适用条件"
+        "优惠适用条件",
+        "研发费用加计扣除范围",
+        "委托研发归集",
+        "创业投资抵扣",
+        "环保设备税额抵免",
+        "区域优惠与主体条件",
+        "技术先进型服务企业",
+        "污染防治第三方企业",
+        "小型微利企业综合判断"
       ],
       "questionIds": [
         "tax-full-04-06-001",
@@ -5773,7 +5943,15 @@
         "tax-full-04-06-004",
         "tax-full-04-06-005",
         "tax-full-04-06-006",
-        "tax-full-04-06-007"
+        "tax-full-04-06-007",
+        "tax-full-04-06-008",
+        "tax-full-04-06-009",
+        "tax-full-04-06-010",
+        "tax-full-04-06-011",
+        "tax-full-04-06-012",
+        "tax-full-04-06-013",
+        "tax-full-04-06-014",
+        "tax-full-04-06-015"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5793,19 +5971,25 @@
       "chapterTitle": "企业所得税法",
       "section": "第七节 应纳税额的计算",
       "sectionNumber": 7,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "居民企业税额",
         "境外税额抵免",
         "核定征收",
-        "非居民所得计税"
+        "非居民所得计税",
+        "所得税计算顺序",
+        "境外抵免限额",
+        "核定征收税基"
       ],
       "questionIds": [
         "tax-full-04-07-001",
         "tax-full-04-07-002",
         "tax-full-04-07-003",
-        "tax-full-04-07-004"
+        "tax-full-04-07-004",
+        "tax-full-04-07-005",
+        "tax-full-04-07-006",
+        "tax-full-04-07-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5825,17 +6009,33 @@
       "chapterTitle": "企业所得税法",
       "section": "第八节 征收管理",
       "sectionNumber": 8,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 11,
+      "addedQuestions": 11,
       "knowledgePoints": [
         "预缴与汇算清缴",
         "汇总纳税",
-        "清算所得"
+        "清算所得",
+        "季度预缴与年度汇算",
+        "汇总纳税分支机构",
+        "企业清算所得",
+        "所得税申报表纳税调整",
+        "预缴已缴税额抵减",
+        "合伙企业所得税主体",
+        "境外投资信息报告",
+        "跨境电商综试区核定"
       ],
       "questionIds": [
         "tax-full-04-08-001",
         "tax-full-04-08-002",
-        "tax-full-04-08-003"
+        "tax-full-04-08-003",
+        "tax-full-04-08-004",
+        "tax-full-04-08-005",
+        "tax-full-04-08-006",
+        "tax-full-04-08-007",
+        "tax-full-04-08-008",
+        "tax-full-04-08-009",
+        "tax-full-04-08-010",
+        "tax-full-04-08-011"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5855,8 +6055,8 @@
       "chapterTitle": "个人所得税法",
       "section": "第一节 纳税义务人与征税范围",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 9,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "居民个人",
         "国籍与居民身份",
@@ -5864,7 +6064,9 @@
         "天数判断",
         "综合所得范围",
         "居民身份与所得来源",
-        "经营与劳务所得"
+        "经营与劳务所得",
+        "住所与居住天数",
+        "所得来源地分类"
       ],
       "questionIds": [
         "tax-05-01",
@@ -5873,7 +6075,9 @@
         "tax-05-04",
         "tax-full-05-01-001",
         "tax-full-05-01-002",
-        "tax-full-05-01-003"
+        "tax-full-05-01-003",
+        "tax-full-05-01-004",
+        "tax-full-05-01-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5893,8 +6097,8 @@
       "chapterTitle": "个人所得税法",
       "section": "第二节 税率、应纳税所得额的确定与应纳税额的计算",
       "sectionNumber": 2,
-      "questions": 9,
-      "addedQuestions": 9,
+      "questions": 15,
+      "addedQuestions": 15,
       "knowledgePoints": [
         "综合所得扣除",
         "综合所得税率",
@@ -5904,7 +6108,13 @@
         "住房贷款与住房租金",
         "赡养老人扣除",
         "超额累进计算",
-        "财产转让所得"
+        "财产转让所得",
+        "综合所得四项",
+        "非居民劳务报酬",
+        "劳务报酬收入额",
+        "稿酬收入额",
+        "经营所得成本扣除",
+        "财产租赁与转让"
       ],
       "questionIds": [
         "tax-full-05-02-001",
@@ -5915,7 +6125,13 @@
         "tax-full-05-02-006",
         "tax-full-05-02-007",
         "tax-full-05-02-008",
-        "tax-full-05-02-009"
+        "tax-full-05-02-009",
+        "tax-full-05-02-010",
+        "tax-full-05-02-011",
+        "tax-full-05-02-012",
+        "tax-full-05-02-013",
+        "tax-full-05-02-014",
+        "tax-full-05-02-015"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5935,15 +6151,19 @@
       "chapterTitle": "个人所得税法",
       "section": "第三节 税收优惠",
       "sectionNumber": 3,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "法定免税与减税",
-        "福利补助与工资"
+        "福利补助与工资",
+        "免税项目的证明",
+        "减税与免税区别"
       ],
       "questionIds": [
         "tax-full-05-03-001",
-        "tax-full-05-03-002"
+        "tax-full-05-03-002",
+        "tax-full-05-03-003",
+        "tax-full-05-03-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5963,15 +6183,21 @@
       "chapterTitle": "个人所得税法",
       "section": "第四节 境外所得的税额扣除",
       "sectionNumber": 4,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "境外抵免限额",
-        "境外所得申报"
+        "境外所得申报",
+        "分国抵免限额",
+        "境外完税凭证",
+        "外币折算"
       ],
       "questionIds": [
         "tax-full-05-04-001",
-        "tax-full-05-04-002"
+        "tax-full-05-04-002",
+        "tax-full-05-04-003",
+        "tax-full-05-04-004",
+        "tax-full-05-04-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -5991,15 +6217,22 @@
       "chapterTitle": "个人所得税法",
       "section": "第五节 应纳税额计算中的特殊问题处理",
       "sectionNumber": 5,
-      "questions": 6,
-      "addedQuestions": 6,
+      "questions": 14,
+      "addedQuestions": 14,
       "knowledgePoints": [
         "全年一次性奖金",
         "解除劳动关系补偿",
         "股权激励",
         "非货币投资与股权转让",
         "证券投资所得",
-        "特殊行业收入"
+        "特殊行业收入",
+        "全年一次性奖金选择",
+        "非现金促销礼品",
+        "个人非货币性资产投资",
+        "股权激励的税目时点",
+        "居民换购住房优惠",
+        "企业年金领取",
+        "保险营销员佣金"
       ],
       "questionIds": [
         "tax-full-05-05-001",
@@ -6007,7 +6240,15 @@
         "tax-full-05-05-003",
         "tax-full-05-05-004",
         "tax-full-05-05-005",
-        "tax-full-05-05-006"
+        "tax-full-05-05-006",
+        "tax-full-05-05-007",
+        "tax-full-05-05-008",
+        "tax-full-05-05-009",
+        "tax-full-05-05-010",
+        "tax-full-05-05-011",
+        "tax-full-05-05-012",
+        "tax-full-05-05-013",
+        "tax-full-05-05-014"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6027,17 +6268,27 @@
       "chapterTitle": "个人所得税法",
       "section": "第六节 征收管理",
       "sectionNumber": 6,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 8,
+      "addedQuestions": 8,
       "knowledgePoints": [
         "预扣预缴与汇算",
         "专项附加信息",
-        "纳税记录与保密"
+        "纳税记录与保密",
+        "汇算清缴适用人",
+        "专项附加扣除留存",
+        "扣缴义务人信息保护",
+        "个税年度申报差额",
+        "多税种交易识别"
       ],
       "questionIds": [
         "tax-full-05-06-001",
         "tax-full-05-06-002",
-        "tax-full-05-06-003"
+        "tax-full-05-06-003",
+        "tax-full-05-06-004",
+        "tax-full-05-06-005",
+        "tax-full-05-06-006",
+        "tax-full-05-06-007",
+        "tax-full-05-06-008"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6057,8 +6308,8 @@
       "chapterTitle": "城市维护建设税法和烟叶税法",
       "section": "第一节 城市维护建设税法",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 9,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "城建税依据",
         "给定依据计算",
@@ -6066,7 +6317,9 @@
         "计税依据与税率",
         "城建税计税依据",
         "城建税税率",
-        "进口与境外销售"
+        "进口与境外销售",
+        "城建税计税依据调整",
+        "城建税纳税地点"
       ],
       "questionIds": [
         "tax-06-01",
@@ -6075,7 +6328,9 @@
         "tax-06-04",
         "tax-full-06-01-001",
         "tax-full-06-01-002",
-        "tax-full-06-01-003"
+        "tax-full-06-01-003",
+        "tax-full-06-01-004",
+        "tax-full-06-01-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6095,15 +6350,19 @@
       "chapterTitle": "城市维护建设税法和烟叶税法",
       "section": "第二节 烟叶税法",
       "sectionNumber": 2,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "烟叶税纳税人",
-        "烟叶税计算"
+        "烟叶税计算",
+        "烟叶税收购主体",
+        "烟叶税计税价格"
       ],
       "questionIds": [
         "tax-full-06-02-001",
-        "tax-full-06-02-002"
+        "tax-full-06-02-002",
+        "tax-full-06-02-003",
+        "tax-full-06-02-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6123,15 +6382,21 @@
       "chapterTitle": "城市维护建设税法和烟叶税法",
       "section": "第三节 教育费附加和地方教育附加",
       "sectionNumber": 3,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "教育附加计算",
-        "附加减免"
+        "附加减免",
+        "两项教育附加",
+        "增值税消费税城建税联算",
+        "附加优惠联动"
       ],
       "questionIds": [
         "tax-full-06-03-001",
-        "tax-full-06-03-002"
+        "tax-full-06-03-002",
+        "tax-full-06-03-003",
+        "tax-full-06-03-004",
+        "tax-full-06-03-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6151,15 +6416,16 @@
       "chapterTitle": "关税法和船舶吨税法",
       "section": "第一节 征税对象与纳税人",
       "sectionNumber": 1,
-      "questions": 6,
-      "addedQuestions": 2,
+      "questions": 8,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "进口纳税人",
         "关境与国境",
         "关税纳税主体",
         "货物与物品",
         "关税征税对象",
-        "关税纳税人"
+        "关税纳税人",
+        "关税纳税义务人"
       ],
       "questionIds": [
         "tax-07-01",
@@ -6167,7 +6433,9 @@
         "tax-07-03",
         "tax-07-04",
         "tax-full-07-01-001",
-        "tax-full-07-01-002"
+        "tax-full-07-01-002",
+        "tax-full-07-01-003",
+        "tax-full-07-01-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6187,17 +6455,20 @@
       "chapterTitle": "关税法和船舶吨税法",
       "section": "第二节 进出口税则",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "税则归类",
         "原产地与税率",
-        "关税税率类别"
+        "关税税率类别",
+        "税则归类顺序"
       ],
       "questionIds": [
         "tax-full-07-02-001",
         "tax-full-07-02-002",
-        "tax-full-07-02-003"
+        "tax-full-07-02-003",
+        "tax-full-07-02-004",
+        "tax-full-07-02-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6217,17 +6488,25 @@
       "chapterTitle": "关税法和船舶吨税法",
       "section": "第三节 关税计税价格与应纳税额的计算",
       "sectionNumber": 3,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "进口关税计税价格",
         "关税与进口增值税",
-        "出口关税倒算"
+        "出口关税倒算",
+        "进口成交价格调整",
+        "出口关税计税价格",
+        "跨境电商退运",
+        "海南自贸港进口政策"
       ],
       "questionIds": [
         "tax-full-07-03-001",
         "tax-full-07-03-002",
-        "tax-full-07-03-003"
+        "tax-full-07-03-003",
+        "tax-full-07-03-004",
+        "tax-full-07-03-005",
+        "tax-full-07-03-006",
+        "tax-full-07-03-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6247,15 +6526,19 @@
       "chapterTitle": "关税法和船舶吨税法",
       "section": "第四节 减免规定",
       "sectionNumber": 4,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "关税减免分类",
-        "减免税用途改变"
+        "减免税用途改变",
+        "法定与特定减免",
+        "减免税货物转让"
       ],
       "questionIds": [
         "tax-full-07-04-001",
-        "tax-full-07-04-002"
+        "tax-full-07-04-002",
+        "tax-full-07-04-003",
+        "tax-full-07-04-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6275,15 +6558,19 @@
       "chapterTitle": "关税法和船舶吨税法",
       "section": "第五节 征收管理",
       "sectionNumber": 5,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "关税征收管理",
-        "关税滞纳"
+        "关税滞纳",
+        "关税退还与补征",
+        "关税税款优先"
       ],
       "questionIds": [
         "tax-full-07-05-001",
-        "tax-full-07-05-002"
+        "tax-full-07-05-002",
+        "tax-full-07-05-003",
+        "tax-full-07-05-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6303,15 +6590,21 @@
       "chapterTitle": "关税法和船舶吨税法",
       "section": "第六节 船舶吨税法",
       "sectionNumber": 6,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "船舶吨税对象",
-        "吨税优惠税率"
+        "吨税优惠税率",
+        "吨税计税要素",
+        "吨税执照期限",
+        "吨税免税与延期"
       ],
       "questionIds": [
         "tax-full-07-06-001",
-        "tax-full-07-06-002"
+        "tax-full-07-06-002",
+        "tax-full-07-06-003",
+        "tax-full-07-06-004",
+        "tax-full-07-06-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6331,8 +6624,8 @@
       "chapterTitle": "资源税法和环境保护税法",
       "section": "第一节 资源税法",
       "sectionNumber": 1,
-      "questions": 8,
-      "addedQuestions": 4,
+      "questions": 12,
+      "addedQuestions": 8,
       "knowledgePoints": [
         "资源税纳税人",
         "进口矿产品",
@@ -6341,7 +6634,10 @@
         "资源税税目",
         "资源税从价计征",
         "资源税自用",
-        "水资源税"
+        "水资源税",
+        "资源税纳税环节",
+        "资源税不含税销售额",
+        "水资源税取水"
       ],
       "questionIds": [
         "tax-08-01",
@@ -6351,7 +6647,11 @@
         "tax-full-08-01-001",
         "tax-full-08-01-002",
         "tax-full-08-01-003",
-        "tax-full-08-01-004"
+        "tax-full-08-01-004",
+        "tax-full-08-01-005",
+        "tax-full-08-01-006",
+        "tax-full-08-01-007",
+        "tax-full-08-01-008"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6371,19 +6671,29 @@
       "chapterTitle": "资源税法和环境保护税法",
       "section": "第二节 环境保护税法",
       "sectionNumber": 2,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 9,
+      "addedQuestions": 9,
       "knowledgePoints": [
         "环保税排放边界",
         "污染当量",
         "环保税计算",
-        "环保税减免"
+        "环保税减免",
+        "环保税直接排放",
+        "多排放口污染当量",
+        "噪声环保税",
+        "固体废物减量",
+        "海洋工程环保税"
       ],
       "questionIds": [
         "tax-full-08-02-001",
         "tax-full-08-02-002",
         "tax-full-08-02-003",
-        "tax-full-08-02-004"
+        "tax-full-08-02-004",
+        "tax-full-08-02-005",
+        "tax-full-08-02-006",
+        "tax-full-08-02-007",
+        "tax-full-08-02-008",
+        "tax-full-08-02-009"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6403,8 +6713,8 @@
       "chapterTitle": "城镇土地使用税法和耕地占用税法",
       "section": "第一节 城镇土地使用税法",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 9,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "土地使用税范围",
         "权属未明",
@@ -6412,7 +6722,9 @@
         "面积分配",
         "土地使用税计税",
         "土地使用税纳税人",
-        "土地使用税减免"
+        "土地使用税减免",
+        "土地使用税应税面积",
+        "土地使用税地域"
       ],
       "questionIds": [
         "tax-09-01",
@@ -6421,7 +6733,9 @@
         "tax-09-04",
         "tax-full-09-01-001",
         "tax-full-09-01-002",
-        "tax-full-09-01-003"
+        "tax-full-09-01-003",
+        "tax-full-09-01-004",
+        "tax-full-09-01-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6441,17 +6755,21 @@
       "chapterTitle": "城镇土地使用税法和耕地占用税法",
       "section": "第二节 耕地占用税法",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "耕地占用税税基",
         "耕地占用税计算",
-        "临时占用与复垦"
+        "临时占用与复垦",
+        "耕地占用税征税行为",
+        "耕地占用税一次性"
       ],
       "questionIds": [
         "tax-full-09-02-001",
         "tax-full-09-02-002",
-        "tax-full-09-02-003"
+        "tax-full-09-02-003",
+        "tax-full-09-02-004",
+        "tax-full-09-02-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6471,8 +6789,8 @@
       "chapterTitle": "房产税法、契税法和土地增值税法",
       "section": "第一节 房产税法",
       "sectionNumber": 1,
-      "questions": 8,
-      "addedQuestions": 4,
+      "questions": 11,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "房产税对象",
         "计税余值",
@@ -6481,7 +6799,10 @@
         "房产税从价计征",
         "房产税从租计征",
         "房产税征税范围",
-        "房产税无租使用"
+        "房产税无租使用",
+        "房产原值扣除",
+        "房屋出租转换",
+        "地下建筑物"
       ],
       "questionIds": [
         "tax-10-01",
@@ -6491,7 +6812,10 @@
         "tax-full-10-01-001",
         "tax-full-10-01-002",
         "tax-full-10-01-003",
-        "tax-full-10-01-004"
+        "tax-full-10-01-004",
+        "tax-full-10-01-005",
+        "tax-full-10-01-006",
+        "tax-full-10-01-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6511,17 +6835,23 @@
       "chapterTitle": "房产税法、契税法和土地增值税法",
       "section": "第二节 契税法",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "契税纳税人",
         "契税计算",
-        "房屋交换契税"
+        "房屋交换契税",
+        "契税受让方",
+        "契税赠与税基",
+        "契税权属交换"
       ],
       "questionIds": [
         "tax-full-10-02-001",
         "tax-full-10-02-002",
-        "tax-full-10-02-003"
+        "tax-full-10-02-003",
+        "tax-full-10-02-004",
+        "tax-full-10-02-005",
+        "tax-full-10-02-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6541,19 +6871,27 @@
       "chapterTitle": "房产税法、契税法和土地增值税法",
       "section": "第三节 土地增值税法",
       "sectionNumber": 3,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 8,
+      "addedQuestions": 8,
       "knowledgePoints": [
         "土地增值税范围",
         "增值额与增值率",
         "土地增值税速算",
-        "土地增值税清算"
+        "土地增值税清算",
+        "土地增值税扣除项目",
+        "土地增值税增值率",
+        "清算触发条件",
+        "普通标准住宅优惠"
       ],
       "questionIds": [
         "tax-full-10-03-001",
         "tax-full-10-03-002",
         "tax-full-10-03-003",
-        "tax-full-10-03-004"
+        "tax-full-10-03-004",
+        "tax-full-10-03-005",
+        "tax-full-10-03-006",
+        "tax-full-10-03-007",
+        "tax-full-10-03-008"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6573,8 +6911,8 @@
       "chapterTitle": "车辆购置税法、车船税法和印花税法",
       "section": "第一节 车辆购置税法",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 11,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "车辆购置税",
         "计税价格",
@@ -6582,7 +6920,11 @@
         "车辆购置税计算",
         "车辆购置税计税",
         "车购税一次征收",
-        "新能源车优惠"
+        "新能源车优惠",
+        "车购税购买与进口",
+        "车购税含税价",
+        "车辆退回税款",
+        "新能源汽车车购税优惠"
       ],
       "questionIds": [
         "tax-11-01",
@@ -6591,7 +6933,11 @@
         "tax-11-04",
         "tax-full-11-01-001",
         "tax-full-11-01-002",
-        "tax-full-11-01-003"
+        "tax-full-11-01-003",
+        "tax-full-11-01-004",
+        "tax-full-11-01-005",
+        "tax-full-11-01-006",
+        "tax-full-11-01-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6611,17 +6957,21 @@
       "chapterTitle": "车辆购置税法、车船税法和印花税法",
       "section": "第二节 车船税法",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "车船税计税单位",
         "车船税年度分摊",
-        "车船税与保险"
+        "车船税与保险",
+        "车船税税目单位",
+        "保险代收车船税"
       ],
       "questionIds": [
         "tax-full-11-02-001",
         "tax-full-11-02-002",
-        "tax-full-11-02-003"
+        "tax-full-11-02-003",
+        "tax-full-11-02-004",
+        "tax-full-11-02-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6641,19 +6991,25 @@
       "chapterTitle": "车辆购置税法、车船税法和印花税法",
       "section": "第三节 印花税法",
       "sectionNumber": 3,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "印花税征税范围",
         "合同增值税列明",
         "印花税计算",
-        "资金账簿"
+        "资金账簿",
+        "印花税书面合同",
+        "印花税不含增值税金额",
+        "产权转移书据"
       ],
       "questionIds": [
         "tax-full-11-03-001",
         "tax-full-11-03-002",
         "tax-full-11-03-003",
-        "tax-full-11-03-004"
+        "tax-full-11-03-004",
+        "tax-full-11-03-005",
+        "tax-full-11-03-006",
+        "tax-full-11-03-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6673,8 +7029,8 @@
       "chapterTitle": "国际税收税务管理实务",
       "section": "第一节 国际税收协定",
       "sectionNumber": 1,
-      "questions": 7,
-      "addedQuestions": 3,
+      "questions": 10,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "协定目的",
         "协定性质",
@@ -6682,7 +7038,10 @@
         "协定不等于免税",
         "税收协定作用",
         "常设机构",
-        "受益所有人"
+        "受益所有人",
+        "常设机构判断",
+        "协定股息条款",
+        "协定相互协商"
       ],
       "questionIds": [
         "tax-12-01",
@@ -6691,7 +7050,10 @@
         "tax-12-04",
         "tax-full-12-01-001",
         "tax-full-12-01-002",
-        "tax-full-12-01-003"
+        "tax-full-12-01-003",
+        "tax-full-12-01-004",
+        "tax-full-12-01-005",
+        "tax-full-12-01-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6711,17 +7073,25 @@
       "chapterTitle": "国际税收税务管理实务",
       "section": "第二节 非居民企业税收管理",
       "sectionNumber": 2,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "非居民企业所得",
         "源泉扣缴",
-        "间接转让"
+        "间接转让",
+        "代表机构收入核定",
+        "非居民股息扣缴",
+        "间接转让境内财产",
+        "对外付汇税务资料"
       ],
       "questionIds": [
         "tax-full-12-02-001",
         "tax-full-12-02-002",
-        "tax-full-12-02-003"
+        "tax-full-12-02-003",
+        "tax-full-12-02-004",
+        "tax-full-12-02-005",
+        "tax-full-12-02-006",
+        "tax-full-12-02-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6741,17 +7111,25 @@
       "chapterTitle": "国际税收税务管理实务",
       "section": "第三节 境外所得税收管理",
       "sectionNumber": 3,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "境外所得抵免限额",
         "境外低税额抵免",
-        "直接与间接抵免"
+        "直接与间接抵免",
+        "境外分支机构亏损",
+        "境外税额抵免凭证",
+        "间接抵免层级",
+        "抵免限额与实际抵免"
       ],
       "questionIds": [
         "tax-full-12-03-001",
         "tax-full-12-03-002",
-        "tax-full-12-03-003"
+        "tax-full-12-03-003",
+        "tax-full-12-03-004",
+        "tax-full-12-03-005",
+        "tax-full-12-03-006",
+        "tax-full-12-03-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6771,19 +7149,28 @@
       "chapterTitle": "国际税收税务管理实务",
       "section": "第四节 国际反避税",
       "sectionNumber": 4,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 9,
+      "addedQuestions": 9,
       "knowledgePoints": [
         "关联申报与独立交易",
         "受控外国企业",
         "资本弱化",
-        "一般反避税"
+        "一般反避税",
+        "数字经济双支柱",
+        "一般反避税目的",
+        "特别纳税调整加息",
+        "资本弱化利息扣除"
       ],
       "questionIds": [
         "tax-full-12-04-001",
         "tax-full-12-04-002",
         "tax-full-12-04-003",
-        "tax-full-12-04-004"
+        "tax-full-12-04-004",
+        "tax-full-12-04-005",
+        "tax-full-12-04-006",
+        "tax-full-12-04-007",
+        "tax-full-12-04-008",
+        "tax-full-12-04-009"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6803,19 +7190,27 @@
       "chapterTitle": "国际税收税务管理实务",
       "section": "第五节 转让定价税务管理",
       "sectionNumber": 5,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 8,
+      "addedQuestions": 8,
       "knowledgePoints": [
         "转让定价方法",
         "利润方法",
         "预约定价安排",
-        "同期资料"
+        "同期资料",
+        "关联申报范围",
+        "同期资料分层",
+        "可比非受控价格法",
+        "预约定价安排期间"
       ],
       "questionIds": [
         "tax-full-12-05-001",
         "tax-full-12-05-002",
         "tax-full-12-05-003",
-        "tax-full-12-05-004"
+        "tax-full-12-05-004",
+        "tax-full-12-05-005",
+        "tax-full-12-05-006",
+        "tax-full-12-05-007",
+        "tax-full-12-05-008"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6835,17 +7230,21 @@
       "chapterTitle": "国际税收税务管理实务",
       "section": "第六节 国际税收征管合作",
       "sectionNumber": 6,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "税收情报交换",
         "非居民金融账户",
-        "税收征管互助"
+        "税收征管互助",
+        "情报交换保密",
+        "金融账户尽职调查"
       ],
       "questionIds": [
         "tax-full-12-06-001",
         "tax-full-12-06-002",
-        "tax-full-12-06-003"
+        "tax-full-12-06-003",
+        "tax-full-12-06-004",
+        "tax-full-12-06-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6865,15 +7264,17 @@
       "chapterTitle": "税收征收管理法",
       "section": "第一节 概述",
       "sectionNumber": 1,
-      "questions": 6,
-      "addedQuestions": 2,
+      "questions": 8,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "征管法作用",
         "适用范围",
         "立法目的",
         "权益与纳税",
         "征管法适用",
-        "纳税人与扣缴义务人"
+        "纳税人与扣缴义务人",
+        "征管法适用范围",
+        "税务机关与纳税人遵守"
       ],
       "questionIds": [
         "tax-13-01",
@@ -6881,7 +7282,9 @@
         "tax-13-03",
         "tax-13-04",
         "tax-full-13-01-001",
-        "tax-full-13-01-002"
+        "tax-full-13-01-002",
+        "tax-full-13-01-003",
+        "tax-full-13-01-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6901,19 +7304,24 @@
       "chapterTitle": "税收征收管理法",
       "section": "第二节 税务管理",
       "sectionNumber": 2,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "账簿凭证管理",
         "纳税申报",
         "延期申报与延期缴税",
-        "发票管理"
+        "发票管理",
+        "税务登记变更",
+        "账簿凭证保管"
       ],
       "questionIds": [
         "tax-full-13-02-001",
         "tax-full-13-02-002",
         "tax-full-13-02-003",
-        "tax-full-13-02-004"
+        "tax-full-13-02-004",
+        "tax-full-13-02-005",
+        "tax-full-13-02-006",
+        "tax-full-13-02-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6933,21 +7341,28 @@
       "chapterTitle": "税收征收管理法",
       "section": "第三节 税款征收",
       "sectionNumber": 3,
-      "questions": 5,
-      "addedQuestions": 5,
+      "questions": 9,
+      "addedQuestions": 9,
       "knowledgePoints": [
         "核定征收",
         "税收保全与强制执行",
         "税收优先权",
         "追征期限",
-        "滞纳金计算"
+        "滞纳金计算",
+        "核定征收的前提",
+        "欠税与担保顺位",
+        "多缴税款退还"
       ],
       "questionIds": [
         "tax-full-13-03-001",
         "tax-full-13-03-002",
         "tax-full-13-03-003",
         "tax-full-13-03-004",
-        "tax-full-13-03-005"
+        "tax-full-13-03-005",
+        "tax-full-13-03-006",
+        "tax-full-13-03-007",
+        "tax-full-13-03-008",
+        "tax-full-13-03-009"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6967,15 +7382,19 @@
       "chapterTitle": "税收征收管理法",
       "section": "第四节 税务检查",
       "sectionNumber": 4,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "税务检查权限",
-        "检查与保密"
+        "检查与保密",
+        "税务检查出示证件",
+        "税务检查复制资料"
       ],
       "questionIds": [
         "tax-full-13-04-001",
-        "tax-full-13-04-002"
+        "tax-full-13-04-002",
+        "tax-full-13-04-003",
+        "tax-full-13-04-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -6995,17 +7414,29 @@
       "chapterTitle": "税收征收管理法",
       "section": "第五节 法律责任",
       "sectionNumber": 5,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 9,
+      "addedQuestions": 9,
       "knowledgePoints": [
         "偷税与欠税",
         "扣缴法律责任",
-        "行政与刑事责任"
+        "行政与刑事责任",
+        "虚假申报与未申报",
+        "骗取出口退税",
+        "虚开发票责任",
+        "税务人员违法",
+        "抗税与逃税",
+        "银行拒不协助执行"
       ],
       "questionIds": [
         "tax-full-13-05-001",
         "tax-full-13-05-002",
-        "tax-full-13-05-003"
+        "tax-full-13-05-003",
+        "tax-full-13-05-004",
+        "tax-full-13-05-005",
+        "tax-full-13-05-006",
+        "tax-full-13-05-007",
+        "tax-full-13-05-008",
+        "tax-full-13-05-009"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7025,17 +7456,23 @@
       "chapterTitle": "税收征收管理法",
       "section": "第六节 纳税担保和抵押",
       "sectionNumber": 6,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "纳税担保形式",
         "抵押与质押",
-        "担保范围"
+        "担保范围",
+        "保证抵押质押",
+        "抵押财产范围",
+        "担保责任终止"
       ],
       "questionIds": [
         "tax-full-13-06-001",
         "tax-full-13-06-002",
-        "tax-full-13-06-003"
+        "tax-full-13-06-003",
+        "tax-full-13-06-004",
+        "tax-full-13-06-005",
+        "tax-full-13-06-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7055,21 +7492,25 @@
       "chapterTitle": "税收征收管理法",
       "section": "第七节 纳税缴费信用管理和重大税收违法失信主体信息公布管理",
       "sectionNumber": 7,
-      "questions": 5,
-      "addedQuestions": 5,
+      "questions": 7,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "信用等级",
         "信用评分",
         "A级限制",
         "信用修复",
-        "失信主体信息"
+        "失信主体信息",
+        "纳税信用与失信公布",
+        "信用异议与修复"
       ],
       "questionIds": [
         "tax-full-13-07-001",
         "tax-full-13-07-002",
         "tax-full-13-07-003",
         "tax-full-13-07-004",
-        "tax-full-13-07-005"
+        "tax-full-13-07-005",
+        "tax-full-13-07-006",
+        "tax-full-13-07-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7089,15 +7530,19 @@
       "chapterTitle": "税收征收管理法",
       "section": "第八节 税收违法行为检举管理办法",
       "sectionNumber": 8,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "税收违法检举",
-        "检举保密"
+        "检举保密",
+        "检举人身份保密",
+        "检举线索处理"
       ],
       "questionIds": [
         "tax-full-13-08-001",
-        "tax-full-13-08-002"
+        "tax-full-13-08-002",
+        "tax-full-13-08-003",
+        "tax-full-13-08-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7117,17 +7562,23 @@
       "chapterTitle": "税收征收管理法",
       "section": "第九节 涉税专业服务管理办法与基本准则",
       "sectionNumber": 9,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "涉税专业服务范围",
         "涉税服务基本准则",
-        "委托与纳税责任"
+        "委托与纳税责任",
+        "涉税专业服务责任",
+        "涉税服务信用评价",
+        "职业道德冲突"
       ],
       "questionIds": [
         "tax-full-13-09-001",
         "tax-full-13-09-002",
-        "tax-full-13-09-003"
+        "tax-full-13-09-003",
+        "tax-full-13-09-004",
+        "tax-full-13-09-005",
+        "tax-full-13-09-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7147,15 +7598,19 @@
       "chapterTitle": "税收征收管理法",
       "section": "第十节 税务文书电子送达规定",
       "sectionNumber": 10,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "电子送达确认",
-        "电子送达证据"
+        "电子送达证据",
+        "电子送达同意",
+        "电子送达时间"
       ],
       "questionIds": [
         "tax-full-13-10-001",
-        "tax-full-13-10-002"
+        "tax-full-13-10-002",
+        "tax-full-13-10-003",
+        "tax-full-13-10-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7175,17 +7630,21 @@
       "chapterTitle": "税收征收管理法",
       "section": "第十一节 互联网平台企业涉税信息报送规定",
       "sectionNumber": 11,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 5,
+      "addedQuestions": 5,
       "knowledgePoints": [
         "平台信息报送",
         "平台报送真实性",
-        "平台信息保护"
+        "平台信息保护",
+        "平台报送主体",
+        "平台数据更正"
       ],
       "questionIds": [
         "tax-full-13-11-001",
         "tax-full-13-11-002",
-        "tax-full-13-11-003"
+        "tax-full-13-11-003",
+        "tax-full-13-11-004",
+        "tax-full-13-11-005"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7205,15 +7664,19 @@
       "chapterTitle": "税收征收管理法",
       "section": "第十二节 税务人员税收业务违法行为处分规定",
       "sectionNumber": 12,
-      "questions": 2,
-      "addedQuestions": 2,
+      "questions": 4,
+      "addedQuestions": 4,
       "knowledgePoints": [
         "税务人员处分",
-        "处分与补救"
+        "处分与补救",
+        "税务人员处分对象",
+        "处分与行政行为效力"
       ],
       "questionIds": [
         "tax-full-13-12-001",
-        "tax-full-13-12-002"
+        "tax-full-13-12-002",
+        "tax-full-13-12-003",
+        "tax-full-13-12-004"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7233,8 +7696,8 @@
       "chapterTitle": "税务行政法制",
       "section": "第一节 税务行政处罚",
       "sectionNumber": 1,
-      "questions": 8,
-      "addedQuestions": 4,
+      "questions": 11,
+      "addedQuestions": 7,
       "knowledgePoints": [
         "处罚法定",
         "处罚种类",
@@ -7242,7 +7705,10 @@
         "处罚与税款",
         "处罚程序权利",
         "首违不罚",
-        "一事不二罚款"
+        "一事不二罚款",
+        "听证权告知",
+        "简易程序条件",
+        "处罚裁量基准"
       ],
       "questionIds": [
         "tax-14-01",
@@ -7252,7 +7718,10 @@
         "tax-full-14-01-001",
         "tax-full-14-01-002",
         "tax-full-14-01-003",
-        "tax-full-14-01-004"
+        "tax-full-14-01-004",
+        "tax-full-14-01-005",
+        "tax-full-14-01-006",
+        "tax-full-14-01-007"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7272,19 +7741,27 @@
       "chapterTitle": "税务行政法制",
       "section": "第二节 税务行政复议",
       "sectionNumber": 2,
-      "questions": 4,
-      "addedQuestions": 4,
+      "questions": 8,
+      "addedQuestions": 8,
       "knowledgePoints": [
         "纳税争议复议前置",
         "复议与处罚争议",
         "复议被申请人",
-        "复议审查"
+        "复议审查",
+        "复议申请期限",
+        "征税争议先缴税",
+        "复议证据责任",
+        "复议和解调解"
       ],
       "questionIds": [
         "tax-full-14-02-001",
         "tax-full-14-02-002",
         "tax-full-14-02-003",
-        "tax-full-14-02-004"
+        "tax-full-14-02-004",
+        "tax-full-14-02-005",
+        "tax-full-14-02-006",
+        "tax-full-14-02-007",
+        "tax-full-14-02-008"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",
@@ -7304,17 +7781,23 @@
       "chapterTitle": "税务行政法制",
       "section": "第三节 税务行政诉讼",
       "sectionNumber": 3,
-      "questions": 3,
-      "addedQuestions": 3,
+      "questions": 6,
+      "addedQuestions": 6,
       "knowledgePoints": [
         "税务诉讼举证",
         "诉讼不停止执行",
-        "司法审查范围"
+        "司法审查范围",
+        "税务诉讼受案",
+        "诉讼期间执行",
+        "举证与判决"
       ],
       "questionIds": [
         "tax-full-14-03-001",
         "tax-full-14-03-002",
-        "tax-full-14-03-003"
+        "tax-full-14-03-003",
+        "tax-full-14-03-004",
+        "tax-full-14-03-005",
+        "tax-full-14-03-006"
       ],
       "source": {
         "book": "2026年注册会计师全国统一考试辅导教材《税法》",

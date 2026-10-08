@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#156bc1">
-  <meta name="description" content="CPA刷题库：按2026年教材编排的五科原创零基础题库。章节学习、机考模拟与错题复习。">
+  <meta name="description" content="CPA刷题库：按2026年教材编排的六科原创零基础题库。章节学习、机考模拟与错题复习。">
   <title>CPA刷题库</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23156bc1'/%3E%3Cpath d='M16 19h32v28H16z' fill='none' stroke='white' stroke-width='3'/%3E%3Cpath d='M23 29h18M23 37h11' stroke='white' stroke-width='3'/%3E%3Cpath d='m36 40 4 4 8-9' fill='none' stroke='%23baf3dd' stroke-width='3'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./app.css">
@@ -23,11 +23,11 @@
           <button type="button" class="subject-choice available" data-subject="law"><strong>经济法</strong><span>载入题库</span></button>
           <button type="button" class="subject-choice available" data-subject="audit"><strong>审计</strong><span>载入题库</span></button>
           <button type="button" class="subject-choice available" data-subject="finance"><strong>财务成本管理</strong><span>载入题库</span></button>
-          <button type="button" class="subject-choice" disabled><strong>公司战略与风险管理</strong><span>题库待补充</span></button>
+          <button type="button" class="subject-choice available" data-subject="strategy"><strong>公司战略与风险管理</strong><span>载入题库</span></button>
           <button type="button" class="subject-choice" disabled><strong>职业能力综合测试（试卷一）</strong><span>题库待补充</span></button>
           <button type="button" class="subject-choice" disabled><strong>职业能力综合测试（试卷二）</strong><span>题库待补充</span></button>
         </div>
-        <p class="subject-picker__note">经济法、财管、税法、审计共 1,401 题，70 章、340 节均有练习。新增题以简答、辨析和计算为主，附答案、解析及来源。可下载知识点清单核对具体范围。</p>
+        <p class="subject-picker__note">六科均已开放。经济法、财管、税法、审计覆盖 340 节；公司战略与风险管理覆盖 29 节，并已扩充细分主题练习。各科题量与实际知识点可在选科后查看。</p>
       </div>
       <p class="subject-picker__disclaimer">原创学习工具 · 非中注协官方练习网站</p>
     </div>
@@ -40,7 +40,7 @@
         <button type="button" id="modeMock" class="tab">机考模拟</button>
         <button type="button" id="modeWrong" class="tab">错题复习 <span id="wrongCount" class="tiny-count">0</span></button>
       </nav>
-      <div class="top-actions"><button type="button" id="changeSubject" class="change-subject" aria-label="返回科目选择">选科</button><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
+      <div class="top-actions"><button type="button" id="changeSubject" class="change-subject" aria-label="返回科目选择">选科</button><button type="button" id="historyBtn" class="history-button">练习历史</button><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
     </header>
     <div class="shell">
       <aside class="sidebar" id="sidebar" aria-label="试题列表">
@@ -54,7 +54,7 @@
           <div id="questionNav" class="question-nav"></div>
           <div class="legend"><span><i class="dot current"></i>当前</span><span><i class="dot answered"></i>已答</span><span><i class="dot marked"></i>标记</span></div>
         </div>
-        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><a class="download-link guide-link" href="./study-guide.md" download>下载四科模块与知识点清单</a><a class="download-link coverage-link" href="./knowledge-points.csv" download>下载知识点与题号对应表</a><p id="progressStatus" role="status">进度自动保存在本设备，退出后可继续。</p><p>答题记录只保存在本设备。换设备或清除浏览器数据后不会同步。</p></div>
+        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><a class="download-link guide-link" href="./study-guide.md" download>下载四科模块与知识点清单</a><a class="download-link coverage-link" href="./knowledge-points.csv" download>下载知识点与题号对应表</a><p id="progressStatus" role="status">进度自动保存在本设备，退出后可继续。</p><p>练习历史保存在本设备，最多保留最近 200 次且不超过 10000 道题。换设备或清除应用数据后不会同步。</p></div>
       </aside>
       <main class="workbench">
         <div class="workhead">

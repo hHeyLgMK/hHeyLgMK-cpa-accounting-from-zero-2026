@@ -1,5 +1,6 @@
 import {chapters as accountingChapters, questions as accountingQuestions} from './questions.js';
 import {extraSubjects} from './extra-subjects.js';
+import {readProgress, writeProgress} from './progress.js';
 const accountingModules = [['基础理论',[1,2,3]],['资产与投资',[4,5,6,7,15]],['负债与权益',[8,9,10,11,12,16]],['金融工具与租赁',[13,14]],['收入与特殊交易',[17,18,19,20,21,22]],['报告与会计变更',[23,24,25]],['合并与计量',[26,27,28,29]],['政府与非营利会计',[30]]];
 const subjects = {accounting:{name:'会计',chapters:accountingChapters,questions:accountingQuestions,modules:accountingModules},...extraSubjects};
 let subjectId='accounting';
@@ -10,6 +11,7 @@ const $ = id => document.getElementById(id);
 const typeName = {single:'单项选择题', multi:'多项选择题', written:'简答与应用题'};
 const letters = ['A','B','C','D'];
 const storageKey = 'cpa-accounting-zero-v1';
+const progressKey = 'cpa-practice-sessions-v1';
 const defaultData = {records:{}, marks:[], shuffle:false};
 let data;
 try {
@@ -32,6 +34,17 @@ let byId = new Map(questions.map(q => [q.id,q]));
 function save() {
   try { localStorage.setItem(storageKey, JSON.stringify(data)); }
   catch { /* The practice still works when local storage is unavailable. */ }
+  saveProgress();
+}
+function saveProgress() {
+  if (!session) return;
+  try {
+    writeProgress(localStorage, progressKey,
+      {subjectId, chapterIndex, sectionName, session, selectionOpen, fontSize}, subjectSessions);
+    $('progressStatus').textContent = '已保存当前作答，退出后会自动继续。';
+  } catch {
+    $('progressStatus').textContent = '当前无法保存进度，请保持页面打开以继续作答。';
+  }
 }
 function el(tag, className, textValue) {
   const node = document.createElement(tag);
@@ -65,6 +78,7 @@ function startTimer() {
       session.seconds--;
       updateTimer();
       if (session.seconds <= 0) finishMock(true);
+      else saveProgress();
     }, 1000);
   }
 }
@@ -281,7 +295,7 @@ function renderQuestion(q) {
     textarea.placeholder = '先写下你的判断和理由，再查看参考答案。';
     textarea.value = a.text;
     textarea.disabled = a.submitted || session.finished;
-    textarea.addEventListener('input', e => { a.text = e.target.value; });
+    textarea.addEventListener('input', e => { a.text = e.target.value; saveProgress(); });
     box.append(textarea);
     box.append(el('p','writing-hint','简答题需自行对照参考答案评分；模拟模式交卷后显示参考答案。'));
   }
@@ -369,6 +383,7 @@ function renderResult() {
   box.append(list);
 }
 function render() {
+  saveProgress();
   renderStats();
   updateTimer();
   for (const mode of ['Learn','Mock','Wrong']) {
@@ -471,6 +486,7 @@ function openSubject(id) {
   $('practiceApp').hidden = false;
   updateTimer();
   $('mode'+session.mode[0].toUpperCase()+session.mode.slice(1)).focus();
+  saveProgress();
 }
 function showSubjectPicker() {
   if (!$('modal').hidden) closeModal();
@@ -479,6 +495,7 @@ function showSubjectPicker() {
   $('practiceApp').hidden = true;
   $('subjectPicker').hidden = false;
   $('chooseAccounting').focus();
+  saveProgress();
 }
 function showHelp() {
   openModal('使用说明', body => {
@@ -489,6 +506,7 @@ function showHelp() {
       body.append(el('p','','新增题标注所属知识节的教材和 PDF 阅读范围。税法扫描缺少印刷页 628—629；相关补充题单列官方来源。'));
     }
     body.append(el('p','','入口页可以选择科目。已开放会计、税法、经济法、审计、财务成本管理。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
+    body.append(el('p','','当前科目、章节、知识节、题号、所选答案、简答草稿、解析和模拟剩余时间会自动保存在本设备。关闭后重新打开会继续上次作答；关闭期间暂停模拟计时。点击练习模式或切换章节会开始新的练习。'));
     body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
@@ -649,8 +667,8 @@ $('markBtn').onclick = () => {
   data.marks = data.marks.includes(q.id) ? data.marks.filter(id => id!==q.id) : [...data.marks,q.id];
   save(); render();
 };
-$('fontDown').onclick = () => { fontSize=Math.max(.85,fontSize-.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); };
-$('fontUp').onclick = () => { fontSize=Math.min(1.4,fontSize+.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); };
+$('fontDown').onclick = () => { fontSize=Math.max(.85,fontSize-.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); saveProgress(); };
+$('fontUp').onclick = () => { fontSize=Math.min(1.4,fontSize+.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); saveProgress(); };
 $('helpBtn').onclick = showHelp;
 $('calculatorBtn').onclick = showCalculator;
 $('modalClose').onclick = closeModal;
@@ -679,5 +697,25 @@ document.addEventListener('keydown', e => {
     if (canonical!==undefined) selectChoice(current(),canonical);
   }
 });
-startChapter(0);
+window.addEventListener('pagehide', saveProgress);
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveProgress(); });
+let restored = null;
+try { restored = readProgress(localStorage, progressKey, subjects); }
+catch { /* Keep practice usable when the browser blocks storage. */ }
+if (restored) {
+  subjectId = restored.subjectId;
+  ({chapters,questions} = subjects[subjectId]);
+  byId = new Map(questions.map(q => [q.id,q]));
+  for (const [id,state] of restored.states) subjectSessions.set(id,state);
+  ({session,chapterIndex,sectionName} = restored.states.get(subjectId));
+  fontSize = restored.fontSize;
+  $('paper').style.setProperty('--question-size',fontSize+'rem');
+  populateChapters();
+  populateSections();
+  startTimer();
+  render();
+  if (restored.selectionOpen) showSubjectPicker();
+  else openSubject(subjectId);
+  if (session.mode === 'mock' && !session.finished && session.seconds <= 0) finishMock(true);
+} else startChapter(0);
 registerWebMCP();

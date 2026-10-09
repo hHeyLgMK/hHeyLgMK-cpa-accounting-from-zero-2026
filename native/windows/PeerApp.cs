@@ -16,6 +16,10 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
+[assembly: System.Reflection.AssemblyVersion("3.2.1.1")]
+[assembly: System.Reflection.AssemblyFileVersion("3.2.1.1")]
+[assembly: System.Reflection.AssemblyProduct("CPA 刷题库 · 设备同步")]
+
 public sealed class PeerApp : IDisposable {
  const int Port=53319, LocalPort=53320, Limit=25*1024*1024;
  const string Service="cpa-study-sync",Group="224.0.0.169",Bank="BANK_PLACEHOLDER";
@@ -54,17 +58,28 @@ public sealed class PeerApp : IDisposable {
   }catch{if(udp!=null)udp.Close();udp=null;}
  }
  [StructLayout(LayoutKind.Sequential)] struct BLOB{public int size;public IntPtr data;}
- [DllImport("crypt32.dll",SetLastError=true)] static extern IntPtr CertCreateSelfSignCertificate(IntPtr key,ref BLOB name,uint flags,IntPtr provider,IntPtr algorithm,IntPtr start,IntPtr end,IntPtr extensions);
- [DllImport("crypt32.dll",SetLastError=true)] static extern bool CertStrToNameW(uint encoding,string name,uint type,IntPtr reserved,byte[] output,ref uint length,IntPtr error);
+ [StructLayout(LayoutKind.Sequential,CharSet=CharSet.Unicode)] struct KEY_PROVIDER{public string container,provider;public uint type,flags,count;public IntPtr parameters;public uint keySpec;}
+ [StructLayout(LayoutKind.Sequential)] struct ALGORITHM{[MarshalAs(UnmanagedType.LPStr)]public string oid;public BLOB parameters;}
+ [DllImport("crypt32.dll",SetLastError=true)] static extern IntPtr CertCreateSelfSignCertificate(IntPtr key,ref BLOB name,uint flags,ref KEY_PROVIDER provider,ref ALGORITHM algorithm,IntPtr start,IntPtr end,IntPtr extensions);
+ // The W entry point takes UTF-16 even when the certificate subject is ASCII.
+ [DllImport("crypt32.dll",SetLastError=true,CharSet=CharSet.Unicode,ExactSpelling=true)] static extern bool CertStrToNameW(uint encoding,string name,uint type,IntPtr reserved,byte[] output,ref uint length,IntPtr error);
  [DllImport("crypt32.dll")] static extern bool CertFreeCertificateContext(IntPtr cert);
  X509Certificate2 LoadCertificate(){
   string file=Path.Combine(directory,"device.pfx");if(File.Exists(file))return new X509Certificate2(file,"",X509KeyStorageFlags.PersistKeySet|X509KeyStorageFlags.Exportable);
-  uint size=0;CertStrToNameW(1,"CN=CPA LAN",3,IntPtr.Zero,null,ref size,IntPtr.Zero);var name=new byte[size];
-  if(!CertStrToNameW(1,"CN=CPA LAN",3,IntPtr.Zero,name,ref size,IntPtr.Zero))throw new Exception("无法生成设备证书");
-  IntPtr buffer=Marshal.AllocHGlobal(name.Length);try{Marshal.Copy(name,0,buffer,name.Length);var blob=new BLOB{size=name.Length,data=buffer};IntPtr handle=CertCreateSelfSignCertificate(IntPtr.Zero,ref blob,0,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero);
-   if(handle==IntPtr.Zero)throw new Exception("设备证书生成失败："+Marshal.GetLastWin32Error());
-   try{var value=new X509Certificate2(handle);if(!value.HasPrivateKey)throw new Exception("设备证书缺少私钥");File.WriteAllBytes(file,value.Export(X509ContentType.Pfx,""));return value;}finally{CertFreeCertificateContext(handle);}
-  }finally{Marshal.FreeHGlobal(buffer);}
+  uint size=0;if(!CertStrToNameW(1,"CN=CPA LAN",3,IntPtr.Zero,null,ref size,IntPtr.Zero))throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(),"无法编码设备证书名称");var name=new byte[size];
+  if(!CertStrToNameW(1,"CN=CPA LAN",3,IntPtr.Zero,name,ref size,IntPtr.Zero))throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(),"无法编码设备证书名称");
+  // The native API's default key cannot be exported to our persisted device PFX.
+  // Create an exportable user key, then reload the PFX before deleting the temporary container.
+  var parameters=new CspParameters(24,null,"CPAStudyPeer-"+Guid.NewGuid().ToString("N")){KeyNumber=(int)KeyNumber.Exchange,Flags=CspProviderFlags.NoPrompt};
+  using(var rsa=new RSACryptoServiceProvider(2048,parameters)){
+   rsa.PersistKeyInCsp=false;rsa.ExportParameters(false);var info=rsa.CspKeyContainerInfo;
+   var provider=new KEY_PROVIDER{container=info.KeyContainerName,provider=info.ProviderName,type=(uint)info.ProviderType,keySpec=(uint)info.KeyNumber};
+   var algorithm=new ALGORITHM{oid="1.2.840.113549.1.1.11"};
+   IntPtr buffer=Marshal.AllocHGlobal(name.Length);try{Marshal.Copy(name,0,buffer,name.Length);var blob=new BLOB{size=name.Length,data=buffer};IntPtr handle=CertCreateSelfSignCertificate(IntPtr.Zero,ref blob,0,ref provider,ref algorithm,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero);
+    if(handle==IntPtr.Zero)throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(),"设备证书生成失败");
+    try{using(var value=new X509Certificate2(handle)){if(!value.HasPrivateKey)throw new Exception("设备证书缺少私钥");var pfx=value.Export(X509ContentType.Pfx,"");File.WriteAllBytes(file,pfx);return new X509Certificate2(pfx,"",X509KeyStorageFlags.PersistKeySet|X509KeyStorageFlags.Exportable);}}finally{CertFreeCertificateContext(handle);}
+   }finally{Marshal.FreeHGlobal(buffer);}
+  }
  }
  static IEnumerable<IPAddress> LocalIPs(){return NetworkInterface.GetAllNetworkInterfaces().Where(n=>n.OperationalStatus==OperationalStatus.Up).SelectMany(n=>n.GetIPProperties().UnicastAddresses).Select(a=>a.Address).Where(a=>a.AddressFamily==AddressFamily.InterNetwork&&!IPAddress.IsLoopback(a));}
  Dictionary<string,object> Info(){return D("service",Service,"version",1,"id",id,"alias",alias,"port",((IPEndPoint)remoteListener.LocalEndpoint).Port,"bankId",Bank);}
@@ -163,6 +178,6 @@ public sealed class PeerApp : IDisposable {
      form.Controls.Add(label);form.Controls.Add(open);form.Shown+=(s,e)=>System.Diagnostics.Process.Start("http://127.0.0.1:"+LocalPort+"/");Application.Run(form);
     }
    }
-  }catch(Exception e){MessageBox.Show(e.Message+"\n如端口已占用，请退出旧的刷题直连程序后重试。","CPA 刷题库");}
+  }catch(Exception e){var socket=e as SocketException;string hint=socket!=null&&socket.SocketErrorCode==SocketError.AddressAlreadyInUse?"\n请退出旧的刷题直连程序后重试。":"";MessageBox.Show(e.Message+hint,"CPA 刷题库");}
  }
 }

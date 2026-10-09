@@ -7,7 +7,7 @@
 ## 最新安装包：3.2.1
 
 - [Android APK：侧边菜单、退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Android.apk)
-- [Windows EXE：退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Windows.exe)
+- [Windows EXE：3.2.1.1 证书启动修复、退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Windows.exe)
 - [完整构建与升级说明](native/README.md)、[安装包 SHA-256](downloads/peer/SHA256SUMS.txt)
 - [2026-10-09 更新与本次同步验证记录](docs/updates/2026-10-09.md)
 

@@ -10,11 +10,30 @@ Android 8.0+，包名 `cn.cpa26.workbook`，版本码 35。保留原签名证书
 
 Windows 需要 .NET Framework 4；运行 EXE 后通过默认浏览器答题。EXE 保持运行才能发现、同步设备；再次运行打开相同本机页面。原来通过文件网页打开的旧 Windows 版记录使用不同来源，可通过进度备份导入迁移。
 
+Windows 安装包已修订为 **3.2.1.1**：修复首次运行时“无法生成设备证书”，正确传递 Unicode 证书名称，创建可持久化的 RSA 设备身份。已有设备证书继续沿用，题库和 Android 3.2.1 安装包未变。
+
 两端连接同一热点或 Wi-Fi，在菜单中打开设备同步，选择对方并输入对方的 8 位配对码。配对后自动交换记录；按“在本机继续对方进度”接管未完成练习。请一次在一台设备继续同一场练习。错题连续答对三次移出，多次收到同一提交事件不会重复累计。
 
 协议为本项目的 `cpa-p2p-v1`，不是 LocalSend 协议。UDP 多播 `224.0.0.169:53319` 用于发现，TCP/TLS 53319 用于设备通信，Windows 本机网页为 `127.0.0.1:53320`。首次配对后固定证书指纹并保存设备令牌。端口被占用、防火墙、访客网络和热点隔离会影响连接；发现失败可手动输入 IP。
 
 ## 构建
+
+仅构建 Windows EXE，可在 Windows 仓库根目录执行（需要 Node.js 和系统 .NET Framework C# 编译器，不需要 Android 签名私钥）：
+
+```powershell
+.\native\windows\build.ps1 -NodePath node
+```
+
+脚本构建共用网页、打包 EXE 并更新 `release.json` 和 `SHA256SUMS.txt`，保留 Android APK。若题库标识已变化，会拒绝仅更新 Windows，以免两端无法配对。
+
+Windows 原生证书及启动回归测试：
+
+```powershell
+& "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:exe /out:work\peer-build\WindowsCertificateTest.exe native\tests\WindowsCertificateTest.cs
+& .\work\peer-build\WindowsCertificateTest.exe .\downloads\peer\CPA刷题库_设备同步_Windows.exe .\work\certificate-test
+```
+
+测试使用独立目录，验证真实 Windows 证书创建、私钥保存、重开后身份不变、TLS 1.2、本机网页及生产同步接口；不打开浏览器界面。测试设备私钥仅留在已忽略的 `work/` 中，不得提交。
 
 运行时无需 Python / Node.js；以下依赖仅用于开发构建。Linux 构建脚本使用解包后的 Ubuntu 工具根目录，依赖 Node.js、Python 3（cryptography）、Mono C# 编译器、JDK 21、Android aapt/zipalign/dx/apksigner，以及 Android 23 编译平台。
 

@@ -11,8 +11,9 @@
       "bytes": 1716753
     },
     "CPA刷题库_设备同步_Windows.exe": {
-      "sha256": "f87fb57c4e7e5170ae9a0da2206b787fc3a0cd8acd7339a409d69bb9fe7a3c03",
-      "bytes": 1718784
+      "sha256": "ecf167ca82ec142fe67787378af9020cebcca512bb728997f1fc863b31f1deb8",
+      "bytes": 1720832
     }
-  }
+  },
+  "windowsVersion": "3.2.1.1"
 }

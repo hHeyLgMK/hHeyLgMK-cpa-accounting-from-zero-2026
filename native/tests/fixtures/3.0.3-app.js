@@ -1,22 +1,15 @@
-import {chapters as accountingChapters, questions as accountingQuestions} from './questions.js';
-import {extraSubjects} from './extra-subjects.js';
-import {strategySubject} from './strategy.js';
-import {questionNumbers} from './question-numbers.js';
-import {readProgress, writeProgress} from './progress.js';
-import {createLanSync} from './lan-sync.js';
+// Application body extracted unchanged from the original six-subject 3.0.3 APK.
 const accountingModules = [['基础理论',[1,2,3]],['资产与投资',[4,5,6,7,15]],['负债与权益',[8,9,10,11,12,16]],['金融工具与租赁',[13,14]],['收入与特殊交易',[17,18,19,20,21,22]],['报告与会计变更',[23,24,25]],['合并与计量',[26,27,28,29]],['政府与非营利会计',[30]]];
 const subjects = {accounting:{name:'会计',chapters:accountingChapters,questions:accountingQuestions,modules:accountingModules},...extraSubjects,strategy:strategySubject};
 let subjectId='accounting';
 let chapters=accountingChapters, questions=accountingQuestions;
 const subjectSessions=new Map();
-let lanSync = null;
 
 const $ = id => document.getElementById(id);
 const typeName = {single:'单项选择题', multi:'多项选择题', written:'简答与应用题'};
 const letters = ['A','B','C','D'];
 const storageKey = 'cpa-accounting-zero-v1';
-const progressKey = 'cpa-practice-sessions-v1';
-const defaultData = {records:{}, marks:[], shuffle:false, history:[]};
+const defaultData = {records:{}, marks:[], shuffle:false, history:[], sync:null};
 let data;
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
@@ -24,9 +17,22 @@ try {
     records:saved.records && typeof saved.records === 'object' ? saved.records : {},
     marks:Array.isArray(saved.marks) ? saved.marks : [],
     shuffle:Boolean(saved.shuffle),
-    history:Array.isArray(saved.history) ? saved.history : []
+    history:Array.isArray(saved.history) ? saved.history : [],
+    sync:saved.sync && typeof saved.sync === 'object' ? saved.sync : null
   } : defaultData;
 } catch { data = defaultData; }
+function uniqueId() {
+  return typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
+}
+const deviceKey = 'cpa-practice-device-v1';
+let deviceId;
+try {
+  deviceId = localStorage.getItem(deviceKey) || uniqueId();
+  localStorage.setItem(deviceKey,deviceId);
+} catch { deviceId = uniqueId(); }
+if (!data.sync || !data.sync.bases || !Array.isArray(data.sync.events)) {
+  data.sync = {bases:{[uniqueId()]:JSON.parse(JSON.stringify(data.records))},events:[]};
+}
 let chapterIndex = 0;
 let sectionName = null;
 let session;
@@ -35,26 +41,11 @@ let timerHandle = null;
 let modalReturnFocus = null;
 let selectionOpen = true;
 let byId = new Map(questions.map(q => [q.id,q]));
-function ensureSessionIdentity(value) {
-  value.id ||= Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9);
-  value.startedAt ||= new Date().toISOString();
-}
 function numberFor(q) { return questionNumbers[subjectId]?.[q.id] || q.id; }
 
 function save() {
-  try { localStorage.setItem(storageKey, JSON.stringify(data)); }
-  catch { /* The practice still works when local storage is unavailable. */ }
-  saveProgress();
-}
-function saveProgress() {
-  if (!session) return;
-  try {
-    writeProgress(localStorage, progressKey,
-      {subjectId, chapterIndex, sectionName, session, selectionOpen, fontSize}, subjectSessions);
-    $('progressStatus').textContent = '已保存当前作答，退出后会自动继续。';
-  } catch {
-    $('progressStatus').textContent = '当前无法保存进度，请保持页面打开以继续作答。';
-  }
+  try { localStorage.setItem(storageKey, JSON.stringify(data)); return true; }
+  catch { return false; }
 }
 function el(tag, className, textValue) {
   const node = document.createElement(tag);
@@ -84,12 +75,10 @@ function startTimer() {
   if (timerHandle) clearInterval(timerHandle);
   if (session.mode === 'mock') {
     timerHandle = setInterval(() => {
-      if (lanSync && !lanSync.canEdit()) return;
       if (selectionOpen || session.mode !== 'mock' || session.finished) return;
       session.seconds--;
       updateTimer();
       if (session.seconds <= 0) finishMock(true);
-      else saveProgress();
     }, 1000);
   }
 }
@@ -159,10 +148,10 @@ function recordOutcome(q, correct, answer) {
   }
   data.records[q.id] = record;
   answer.recorded = true;
+  data.sync.events.push({id:deviceId+'-'+uniqueId(),question:q.id,correct,at:new Date().toISOString()});
   save();
 }
 function historyEntry() {
-  ensureSessionIdentity(session);
   let entry = data.history.find(item => item.id === session.id);
   if (!entry) {
     entry = {id:session.id, startedAt:session.startedAt, finishedAt:null,
@@ -181,6 +170,118 @@ function trimHistory() {
     total -= data.history[data.history.length-1].items.length;
     data.history.pop();
   }
+}
+function normalizedRecord(value) {
+  if (!value || typeof value !== 'object' || !Number.isSafeInteger(value.attempts) ||
+      !Number.isSafeInteger(value.correct) || value.attempts < 0 || value.attempts > 10000000 ||
+      value.correct < 0 || value.correct > value.attempts || typeof value.wrong !== 'boolean') throw Error('答题统计格式不正确');
+  return {attempts:value.attempts,correct:value.correct,wrong:value.wrong,
+    streak:Number.isSafeInteger(value.streak) && value.streak >= 0 && value.streak <= 3 ? value.streak : 0};
+}
+function normalizeBackup(text) {
+  if (text.length > 25000000) throw Error('备份文件超过 25 MB');
+  let backup;
+  try { backup = JSON.parse(text); } catch { throw Error('不是有效的 JSON 备份'); }
+  if (backup?.app !== 'CPA刷题库' || backup?.formatVersion !== 1 || !backup.data ||
+      !backup.data.sync || !Array.isArray(backup.data.sync.events) ||
+      !backup.data.sync.bases || typeof backup.data.sync.bases !== 'object' ||
+      !Array.isArray(backup.data.history) || !Array.isArray(backup.data.marks)) throw Error('备份版本或内容不正确');
+  const sync = {bases:Object.create(null),events:[]};
+  const bases = Object.entries(backup.data.sync.bases);
+  if (bases.length > 1000 || backup.data.sync.events.length > 100000 || backup.data.history.length > 2000) throw Error('备份记录超出支持范围');
+  for (const [id,records] of bases) {
+    if (!id || id.length > 120 || !records || typeof records !== 'object' || Array.isArray(records) || Object.keys(records).length > 10000) throw Error('统计基线格式不正确');
+    const normalized = Object.create(null);
+    for (const [qid,record] of Object.entries(records)) {
+      if (!qid || qid.length > 150) throw Error('题目编号不正确');
+      normalized[qid] = normalizedRecord(record);
+    }
+    sync.bases[id] = normalized;
+  }
+  for (const event of backup.data.sync.events) {
+    if (!event || typeof event.id !== 'string' || !event.id || event.id.length > 150 ||
+        typeof event.question !== 'string' || !event.question || event.question.length > 150 ||
+        typeof event.correct !== 'boolean' || typeof event.at !== 'string' ||
+        !Number.isFinite(Date.parse(event.at))) throw Error('答题事件格式不正确');
+    sync.events.push({id:event.id,question:event.question,correct:event.correct,at:event.at});
+  }
+  const history = [];
+  for (const entry of backup.data.history) {
+    if (!entry || typeof entry.id !== 'string' || !entry.id || entry.id.length > 150 ||
+        typeof entry.startedAt !== 'string' || !Number.isFinite(Date.parse(entry.startedAt)) ||
+        typeof entry.subject !== 'string' || entry.subject.length > 30 ||
+        !['learn','mock','wrong'].includes(entry.mode) ||
+        !Number.isSafeInteger(entry.total) || entry.total < 0 || entry.total > 10000 ||
+        !Array.isArray(entry.items) || entry.items.length > 10000) throw Error('练习历史格式不正确');
+    const items = entry.items.map(item => {
+      if (!item || typeof item.id !== 'string' || !item.id || item.id.length > 150 ||
+          !['single','multi','written'].includes(item.type) ||
+          !Array.isArray(item.choices) || item.choices.length > 4 ||
+          !item.choices.every(n => Number.isInteger(n) && n >= 0 && n < 4) ||
+          typeof item.text !== 'string' || item.text.length > 20000 ||
+          (item.correct !== null && typeof item.correct !== 'boolean')) throw Error('历史答案格式不正确');
+      return {id:item.id,number:String(item.number || item.id).slice(0,150),type:item.type,
+        choices:item.choices.slice(),text:item.text,submitted:Boolean(item.submitted),correct:item.correct,
+        at:typeof item.at === 'string' && Number.isFinite(Date.parse(item.at)) ? item.at : entry.startedAt};
+    });
+    history.push({id:entry.id,startedAt:entry.startedAt,
+      finishedAt:typeof entry.finishedAt === 'string' && Number.isFinite(Date.parse(entry.finishedAt)) ? entry.finishedAt : null,
+      subject:entry.subject,mode:entry.mode,chapter:String(entry.chapter || '').slice(0,200) || null,
+      section:String(entry.section || '').slice(0,200) || null,total:entry.total,items});
+  }
+  if (backup.data.marks.length > 10000 || !backup.data.marks.every(id => typeof id === 'string' && id.length <= 150)) throw Error('标记题目格式不正确');
+  return {sync,history,marks:backup.data.marks};
+}
+function rebuildRecords(sync) {
+  const result = Object.create(null);
+  for (const baseline of Object.values(sync.bases)) {
+    for (const [id,old] of Object.entries(baseline)) {
+      const record = result[id] || (result[id] = {attempts:0,correct:0,wrong:false,streak:0});
+      record.attempts += old.attempts;
+      record.correct += old.correct;
+      if (old.wrong) { record.wrong = true; record.streak = Math.max(record.streak,old.streak); }
+    }
+  }
+  for (const event of sync.events.slice().sort((a,b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id))) {
+    const record = result[event.question] || (result[event.question] = {attempts:0,correct:0,wrong:false,streak:0});
+    record.attempts++;
+    if (event.correct) {
+      record.correct++;
+      if (record.wrong && ++record.streak >= 3) { record.wrong = false; record.streak = 0; }
+    } else { record.wrong = true; record.streak = 0; }
+  }
+  return result;
+}
+function mergeProgress(incoming) {
+  const sync = {bases:Object.assign(Object.create(null),data.sync.bases,incoming.sync.bases),events:[]};
+  const events = new Map();
+  for (const event of [...data.sync.events,...incoming.sync.events]) if (!events.has(event.id)) events.set(event.id,event);
+  sync.events = [...events.values()];
+  const entries = new Map();
+  for (const entry of [...data.history,...incoming.history]) {
+    const existing = entries.get(entry.id);
+    if (!existing) { entries.set(entry.id,{...entry,items:entry.items.slice()}); continue; }
+    const items = new Map(existing.items.map(item => [item.id,item]));
+    for (const item of entry.items) {
+      const old = items.get(item.id);
+      if (!old || item.at >= old.at) items.set(item.id,item);
+    }
+    existing.items = [...items.values()];
+    if (entry.finishedAt && (!existing.finishedAt || entry.finishedAt > existing.finishedAt)) existing.finishedAt = entry.finishedAt;
+  }
+  const history = [...entries.values()].sort((a,b) => b.startedAt.localeCompare(a.startedAt));
+  const next = {...data,records:rebuildRecords(sync),marks:[...new Set([...data.marks,...incoming.marks])],history,sync};
+  let total = next.history.reduce((n,entry) => n + entry.items.length,0);
+  while (next.history.length > 200 || (total > 10000 && next.history.length > 1)) total -= next.history.pop().items.length;
+  try { localStorage.setItem(storageKey,JSON.stringify(next)); }
+  catch { throw Error('设备存储空间不足，导入未生效；请先保留备份文件'); }
+  data = next;
+  render();
+  return {sessions:next.history.length,attempts:sync.events.length};
+}
+function exportProgress() {
+  return JSON.stringify({app:'CPA刷题库',formatVersion:1,exportedAt:new Date().toISOString(),
+    data:{records:data.records,marks:data.marks,history:data.history,sync:data.sync}});
 }
 function rememberAnswer(q, a) {
   const entry = historyEntry();
@@ -385,7 +486,7 @@ function renderQuestion(q) {
     textarea.placeholder = '先写下你的判断和理由，再查看参考答案。';
     textarea.value = a.text;
     textarea.disabled = a.submitted || session.finished;
-    textarea.addEventListener('input', e => { a.text = e.target.value; saveProgress(); });
+    textarea.addEventListener('input', e => { a.text = e.target.value; });
     box.append(textarea);
     box.append(el('p','writing-hint','简答题需自行对照参考答案评分；模拟模式交卷后显示参考答案。'));
   }
@@ -485,7 +586,6 @@ function renderResult() {
   box.append(list);
 }
 function render() {
-  saveProgress();
   renderStats();
   updateTimer();
   for (const mode of ['Learn','Mock','Wrong']) {
@@ -583,7 +683,10 @@ function historySummary(entry) {
 }
 function showHistory() {
   openModal('练习历史', body => {
-    body.append(el('p','history-note','按提交记录；逐题提交也会保存。最多保留最近 200 次且不超过 10000 道题，仅在本设备可查看。'));
+    body.append(el('p','history-note','按提交记录；逐题提交也会保存。最多保留最近 200 次且不超过 10000 道题，可导出备份转移到其他设备。'));
+    const backup = el('button','history-back','导出 / 导入记录');
+    backup.type = 'button'; backup.onclick = showBackup;
+    body.append(backup);
     if (!data.history.length) {
       body.append(el('p','','暂无记录。提交一道题或完成一组练习后会显示在这里。'));
       return;
@@ -599,6 +702,88 @@ function showHistory() {
       list.append(card);
     });
     body.append(list);
+  });
+}
+function showBackup() {
+  openModal('导出与导入记录', body => {
+    body.append(el('p','history-note','手动同步：从一端导出备份，在另一端导入。重复导入会按记录编号去重；导入会合并历史、答题统计和标记题目。'));
+    const status = el('p','backup-status','');
+    status.setAttribute('role','status');
+    const android = /Android/i.test(navigator.userAgent);
+    const actions = el('div','backup-actions');
+    const download = el('button','','下载 JSON 备份');
+    download.type = 'button';
+    download.onclick = () => {
+      const blob = new Blob([exportProgress()],{type:'application/json;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const link = el('a');
+      link.href = url; link.download = 'CPA刷题记录_'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url),60000);
+      status.textContent = '已请求保存备份文件。若安卓 APP 未显示保存窗口，请使用“分享或复制备份”。';
+    };
+    const transfer = el('button','','分享或复制备份');
+    transfer.type = 'button';
+    const pasted = el('textarea','backup-text');
+    pasted.placeholder = '也可将另一台设备复制的完整备份文本粘贴到这里，再点“导入文本”。';
+    pasted.setAttribute('aria-label','备份文本');
+    transfer.onclick = async () => {
+      const content = exportProgress();
+      try {
+        const file = new File([content],'CPA刷题记录_'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
+        if (navigator.canShare?.({files:[file]}) && navigator.share) {
+          await navigator.share({files:[file],title:'CPA刷题记录备份'});
+          status.textContent = '已打开系统分享，请将备份文件发送到另一台设备。';
+          return;
+        }
+      } catch (error) {
+        if (error?.name === 'AbortError') { status.textContent = '已取消分享。'; return; }
+      }
+      pasted.value = content;
+      pasted.focus(); pasted.select();
+      try {
+        let copied = false;
+        if (navigator.clipboard?.writeText) {
+          try { await navigator.clipboard.writeText(content); copied = true; } catch { /* Try the selected text below. */ }
+        }
+        if (!copied && !document.execCommand('copy')) throw Error('copy unavailable');
+        status.textContent = '已复制备份文本，可发送到另一台设备并粘贴导入。';
+      } catch { status.textContent = '备份文本已显示在下方，请长按文本全选并复制。'; }
+    };
+    if (!android) actions.append(download);
+    actions.append(transfer);
+    body.append(actions);
+    if (!android) {
+      const fileLabel = el('label','backup-file-label','选择 JSON 备份文件');
+      const picker = el('input');
+      picker.type = 'file'; picker.accept = '.json,application/json';
+      picker.onchange = async () => {
+        const file = picker.files?.[0];
+        if (!file) return;
+        try {
+          if (file.size > 25000000) throw Error('备份文件超过 25 MB');
+          const result = mergeProgress(normalizeBackup(await file.text()));
+          status.textContent = '导入完成：现有 '+result.sessions+' 次练习、'+result.attempts+' 条答题事件。';
+        } catch (error) { status.textContent = '导入失败：'+error.message; }
+        picker.value = '';
+      };
+      fileLabel.append(picker);
+      body.append(fileLabel);
+    }
+    body.append(el('p','history-note',android
+      ? '安卓 APP：使用“分享或复制备份”，在另一台设备粘贴文本导入。系统若支持文件分享，也可以把 JSON 文件发送到电脑。'
+      : '电脑浏览器：可下载或选择 JSON 文件；也可复制、粘贴备份文本。'));
+    const importButton = el('button','backup-import','导入文本并合并');
+    importButton.type = 'button';
+    importButton.onclick = () => {
+      try {
+        if (!pasted.value.trim()) throw Error('请先粘贴备份文本');
+        const result = mergeProgress(normalizeBackup(pasted.value));
+        pasted.value = '';
+        status.textContent = '导入完成：现有 '+result.sessions+' 次练习、'+result.attempts+' 条答题事件。';
+      } catch (error) { status.textContent = '导入失败：'+error.message; }
+    };
+    body.append(pasted,importButton,status);
   });
 }
 function showHistoryDetail(id) {
@@ -663,7 +848,6 @@ function openSubject(id) {
   $('practiceApp').hidden = false;
   updateTimer();
   $('mode'+session.mode[0].toUpperCase()+session.mode.slice(1)).focus();
-  saveProgress();
 }
 function showSubjectPicker() {
   if (!$('modal').hidden) closeModal();
@@ -672,7 +856,6 @@ function showSubjectPicker() {
   $('practiceApp').hidden = true;
   $('subjectPicker').hidden = false;
   $('chooseAccounting').focus();
-  saveProgress();
 }
 function showHelp() {
   openModal('使用说明', body => {
@@ -683,7 +866,6 @@ function showHelp() {
       body.append(el('p','',subjectId==='strategy'?'战略起步题标注知识节阅读范围，扩充题标注知识点所在教材页。知识点与题号对应表列出实际题目，尚不能据此断言每条细则和综合考法均已覆盖。':subjectId==='tax'?'税法原有逐节题标注所属知识节阅读范围，本次补充题标注知识点所在教材页；扫描缺少印刷页 628—629，相关信用管理题单列官方来源。目录逐节覆盖不代表穷尽所有例外与综合考法。':'新增题标注所属知识节的教材和 PDF 阅读范围。'));
     }
     body.append(el('p','','入口页可以选择六个专业阶段科目。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
-    body.append(el('p','','当前科目、章节、知识节、题号、所选答案、简答草稿、解析和模拟剩余时间会自动保存在本设备。关闭后重新打开会继续上次作答；关闭期间暂停模拟计时。点击练习模式或切换章节会开始新的练习。'));
     body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
@@ -693,7 +875,7 @@ function showHelp() {
     a.rel = 'noopener noreferrer';
     p.append(a);
     body.append(p);
-    body.append(el('p','','点击“练习历史”可查看提交时间、答案与解析；记录只保存在本设备。升级前累计的答题次数和错题状态会保留，但此前的逐次答案无法回溯。2027 年备考请在新版考试大纲发布后核对变化。'));
+    body.append(el('p','','点击“练习历史”可查看答案与解析，并导出或导入记录以手动同步设备。记录保存在本设备；升级前累计的答题次数和错题状态会保留，但此前的逐次答案无法回溯。2027 年备考请在新版考试大纲发布后核对变化。'));
   });
 }
 function showCalculator() {
@@ -846,8 +1028,8 @@ $('markBtn').onclick = () => {
   data.marks = data.marks.includes(q.id) ? data.marks.filter(id => id!==q.id) : [...data.marks,q.id];
   save(); render();
 };
-$('fontDown').onclick = () => { fontSize=Math.max(.85,fontSize-.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); saveProgress(); };
-$('fontUp').onclick = () => { fontSize=Math.min(1.4,fontSize+.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); saveProgress(); };
+$('fontDown').onclick = () => { fontSize=Math.max(.85,fontSize-.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); };
+$('fontUp').onclick = () => { fontSize=Math.min(1.4,fontSize+.1); $('paper').style.setProperty('--question-size',fontSize+'rem'); };
 $('helpBtn').onclick = showHelp;
 $('calculatorBtn').onclick = showCalculator;
 $('modalClose').onclick = closeModal;
@@ -862,7 +1044,6 @@ $('toggleSidebar').onclick = () => {
   }
 };
 document.addEventListener('keydown', e => {
-  if (lanSync && !lanSync.canEdit()) return;
   if (e.key === 'Escape') { if (!$('modal').hidden) closeModal(); else closeDrawer(); }
   if (selectionOpen) return;
   if (!$('modal').hidden || e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
@@ -877,50 +1058,5 @@ document.addEventListener('keydown', e => {
     if (canonical!==undefined) selectChoice(current(),canonical);
   }
 });
-window.addEventListener('pagehide', saveProgress);
-document.addEventListener('visibilitychange', () => { if (document.hidden) saveProgress(); });
-let restored = null;
-try { restored = readProgress(localStorage, progressKey, subjects); }
-catch { /* Keep practice usable when the browser blocks storage. */ }
-if (restored) {
-  subjectId = restored.subjectId;
-  ({chapters,questions} = subjects[subjectId]);
-  byId = new Map(questions.map(q => [q.id,q]));
-  for (const [id,state] of restored.states) { ensureSessionIdentity(state.session); subjectSessions.set(id,state); }
-  ({session,chapterIndex,sectionName} = restored.states.get(subjectId));
-  fontSize = restored.fontSize;
-  $('paper').style.setProperty('--question-size',fontSize+'rem');
-  populateChapters();
-  populateSections();
-  startTimer();
-  render();
-  if (restored.selectionOpen) showSubjectPicker();
-  else openSubject(subjectId);
-  if (session.mode === 'mock' && !session.finished && session.seconds <= 0) finishMock(true);
-} else startChapter(0);
+startChapter(0);
 registerWebMCP();
-// Static websites and offline files continue to work without the sync service.
-if (typeof createLanSync === 'function') {
-  lanSync = createLanSync({
-    snapshot:() => ({data:JSON.stringify(data), progress:localStorage.getItem(progressKey)}),
-    apply(snapshot) {
-      const savedData = JSON.parse(snapshot.data || 'null');
-      const progress = readProgress({getItem:() => snapshot.progress}, progressKey, subjects);
-      if (!savedData || !savedData.records || !Array.isArray(savedData.history) || !progress) throw Error('共享记录无效或题库版本不一致');
-      localStorage.setItem(storageKey, snapshot.data);
-      localStorage.setItem(progressKey, snapshot.progress);
-      data = savedData;
-      subjectSessions.clear();
-      for (const [id,state] of progress.states) subjectSessions.set(id,state);
-      subjectId = progress.subjectId;
-      ({chapters,questions} = subjects[subjectId]);
-      byId = new Map(questions.map(q => [q.id,q]));
-      ({session,chapterIndex,sectionName} = progress.states.get(subjectId));
-      fontSize = progress.fontSize;
-      $('paper').style.setProperty('--question-size',fontSize+'rem');
-      $('shuffleOptions').checked = Boolean(data.shuffle);
-      populateChapters(); populateSections(); startTimer(); render();
-      if (progress.selectionOpen) showSubjectPicker(); else openSubject(subjectId);
-    }
-  });
-}

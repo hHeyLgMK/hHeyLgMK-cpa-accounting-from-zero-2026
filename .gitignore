@@ -1,1 +1,12 @@
 /work/
+/lan-data/
+**/__pycache__/
+
+# Signing credentials must never enter the public repository.
+**/signing_key.pem
+*.pk8
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.idsig

@@ -21,6 +21,7 @@ const scripts = [
   "const {strategySubject} = "+wrap('strategy.js','strategySubject')+';',
   "const {questionNumbers} = "+wrap('question-numbers.js','questionNumbers')+';',
   "const {readProgress,writeProgress} = "+wrap('progress.js','readProgress,writeProgress')+';',
+  "const {createLanSync} = "+wrap('lan-sync.js','createLanSync')+';',
   moduleBody('app.js')
 ].join('\n');
 const downloads = {};

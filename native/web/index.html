@@ -12,7 +12,7 @@
 <body>
   <section class="subject-picker" id="subjectPicker" aria-labelledby="subjectTitle">
     <div class="subject-picker__inner">
-      <div class="subject-picker__brand"><span class="subject-picker__mark" aria-hidden="true">题</span> CPA刷题库</div>
+      <button type="button" id="subjectMenuTrigger" class="subject-picker__brand app-menu-trigger" aria-label="打开 CPA刷题库 菜单" aria-controls="appMenu" aria-expanded="false"><span class="subject-picker__mark" aria-hidden="true">题</span> CPA刷题库<span class="menu-trigger-lines" aria-hidden="true"><i></i><i></i><i></i></span></button>
       <h1 id="subjectTitle">选择练习科目</h1>
       <p class="subject-picker__subtitle">先选科目，再进入章节学习、机考短练或错题复习。</p>
       <div class="subject-card">
@@ -34,13 +34,13 @@
   </section>
   <div class="app" id="practiceApp" hidden>
     <header class="topbar">
-      <div class="brand"><span class="brand-mark" aria-hidden="true">题</span><span><strong>CPA刷题库</strong><small>2026 教材 · 会计入门题库</small></span></div>
+      <button type="button" id="practiceMenuTrigger" class="brand app-menu-trigger" aria-label="打开 CPA刷题库 菜单" aria-controls="appMenu" aria-expanded="false"><span class="brand-mark" aria-hidden="true">题</span><span><strong>CPA刷题库</strong><small>2026 教材 · 会计入门题库</small></span><span class="menu-trigger-lines" aria-hidden="true"><i></i><i></i><i></i></span></button>
       <nav class="mode-tabs" aria-label="练习模式">
         <button type="button" id="modeLearn" class="tab active">章节学习</button>
         <button type="button" id="modeMock" class="tab">机考模拟</button>
         <button type="button" id="modeWrong" class="tab">错题复习 <span id="wrongCount" class="tiny-count">0</span></button>
       </nav>
-      <div class="top-actions"><button type="button" id="changeSubject" class="change-subject" aria-label="返回科目选择">选科</button><button type="button" id="historyBtn" class="history-button">练习历史</button><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
+      <div class="top-actions"><span id="timer" class="timer" aria-live="off">学习模式</span><button type="button" id="helpBtn" class="icon-btn" aria-label="使用说明" title="使用说明">?</button></div>
     </header>
     <div class="shell">
       <aside class="sidebar" id="sidebar" aria-label="试题列表">
@@ -54,7 +54,7 @@
           <div id="questionNav" class="question-nav"></div>
           <div class="legend"><span><i class="dot current"></i>当前</span><span><i class="dot answered"></i>已答</span><span><i class="dot marked"></i>标记</span></div>
         </div>
-        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><a class="download-link guide-link" href="./study-guide.md" download>下载四科模块与知识点清单</a><a class="download-link coverage-link" href="./knowledge-points.csv" download>下载知识点与题号对应表</a><p id="progressStatus" role="status">进度自动保存在本设备，退出后可继续。</p><p>练习历史保存在本设备，最多保留最近 200 次且不超过 10000 道题。通过局域网版顶部的配对功能可同步到另一台设备。</p></div>
+        <div class="sidebar-bottom"><label class="switch-line"><input type="checkbox" id="shuffleOptions"><span>随机选项位置</span></label><a class="download-link" href="./questions.csv" download>下载题库 CSV</a><a class="download-link guide-link" href="./study-guide.md" download>下载四科模块与知识点清单</a><a class="download-link coverage-link" href="./knowledge-points.csv" download>下载知识点与题号对应表</a><p>记录保存在本设备。到“练习历史”导出或导入备份，可在手机与电脑之间手动同步。</p></div>
       </aside>
       <main class="workbench">
         <div class="workhead">
@@ -71,11 +71,24 @@
           <div class="toolbar-left"><button type="button" id="calculatorBtn" class="tool-lite">▦ 计算器</button><span class="tool-tip" id="toolTip">选好答案后点击“提交答案”</span></div>
           <div class="toolbar-right"><button type="button" id="prevBtn" class="tool-lite">上一题</button><button type="button" id="submitBtn" class="primary">提交答案</button><button type="button" id="nextBtn" class="primary ghost">下一题</button><button type="button" id="finishBtn" class="finish">交卷</button></div>
         </div>
+        <div id="progressStatus" style="font-size:12px;color:#64748b;padding:4px 16px 10px">正在保存答题进度…</div>
       </main>
     </div>
     <div id="sideScrim" class="side-scrim" hidden></div>
-    <div id="modal" class="modal-backdrop" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-top"><h2 id="modalTitle"></h2><button type="button" id="modalClose" aria-label="关闭">×</button></div><div id="modalBody"></div></section></div>
   </div>
+  <div id="appMenu" class="app-menu-layer" aria-hidden="true" inert>
+    <div id="appMenuScrim" class="app-menu-backdrop" aria-hidden="true"></div>
+    <aside class="app-menu-panel" role="dialog" aria-modal="true" aria-labelledby="appMenuTitle">
+      <div class="app-menu-heading"><div><span class="app-menu-kicker">学习导航</span><h2 id="appMenuTitle">CPA刷题库</h2></div><button type="button" id="appMenuClose" class="app-menu-close" aria-label="关闭菜单">×</button></div>
+      <nav class="app-menu-nav" aria-label="主要功能">
+        <button type="button" id="changeSubject" class="app-menu-item"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span><strong>选科</strong><small>选择或切换练习科目</small></span><span class="app-menu-chevron" aria-hidden="true">›</span></button>
+        <button type="button" id="historyBtn" class="app-menu-item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><strong>练习历史</strong><small>查看作答记录与备份</small></span><span class="app-menu-chevron" aria-hidden="true">›</span></button>
+        <button type="button" id="deviceSyncBtn" class="app-menu-item"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="13" height="10" rx="1.5"/><path d="M8.5 14v4M5 18h7"/><rect x="16" y="9" width="6" height="12" rx="1.5"/><path d="M18.5 18h1"/></svg><span><strong>设备同步</strong><small>连接电脑，接着刷题</small></span><span class="app-menu-chevron" aria-hidden="true">›</span></button>
+      </nav>
+      <div class="app-menu-footer"><span id="appMenuContext">选择科目，开始练习</span><small>答题进度自动保存</small></div>
+    </aside>
+  </div>
+  <div id="modal" class="modal-backdrop" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-top"><h2 id="modalTitle"></h2><button type="button" id="modalClose" aria-label="关闭">×</button></div><div id="modalBody"></div></section></div>
   <script type="module" src="./app.js"></script>
 </body>
 </html>

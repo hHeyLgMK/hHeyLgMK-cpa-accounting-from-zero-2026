@@ -2,11 +2,22 @@
 
 按科目、学习模块、章节和知识节组织的注册会计师练习工具，提供网页版和 Windows 离线版。当前六个专业阶段科目全部开放，综合阶段两套试卷仍待补充。题目是原创学习练习，非中注协官方题库。
 
-本次源码和题库取自用户提供的 `CPA刷题库_六科离线版_Android-3.apk` 内置 `assets/index.html`，合并仓库已有的退出续答功能。导入来源、原始文件哈希和题目数据哈希见 [content/android-import.json](content/android-import.json)。Android 原生壳源码不在本仓库中。
+本次源码和题库取自用户提供的 `CPA刷题库_六科离线版_Android-3.apk` 内置 `assets/index.html`，合并仓库已有的退出续答功能。导入来源、原始文件哈希和题目数据哈希见 [content/android-import.json](content/android-import.json)。最新 Android 和 Windows 原生设备同步源码见 `native/`。
 
-## 最新更新记录
+## 最新安装包：3.2.1
 
-[2026-10-09 更新记录](docs/updates/2026-10-09.md)归档了下午报告的 Android 3.2.0 退出续答与局域网同步、3.2.1 侧边菜单更新。新版源码和 APK 尚待取得并同步；当前运行时源码及 Windows 下载仍以 2026-10-08 的实际交付为基线。
+- [Android APK：侧边菜单、退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Android.apk)
+- [Windows EXE：退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Windows.exe)
+- [完整构建与升级说明](native/README.md)、[安装包 SHA-256](downloads/peer/SHA256SUMS.txt)
+- [2026-10-09 更新与本次同步验证记录](docs/updates/2026-10-09.md)
+
+点击左上角“CPA刷题库”打开左侧菜单，集中进入选科、练习历史和设备同步。六科共 4,412 题保持原题号、题干、答案及来源。
+
+Android 包名 `cn.cpa26.workbook`、版本 `3.2.1`、版本码 `35`，沿用原六科离线版的签名证书。原六科离线版 3.0.3 / 同包名 3.2.0 可直接覆盖升级；独立包名 `cn.cpa26.workbookresume` 的旧续答版属于另一应用。请保留原应用数据，勿先卸载。
+
+新设备同步版直接运行 APK / EXE，在同一 Wi-Fi 或热点内发现设备、输入对方配对码，配对后交换记录。未提交的练习使用“在本机继续对方进度”接管。无需启动 Python 服务；不与 LocalSend 软件互通。Android 需 8.0+；Windows 使用 .NET Framework 4 和默认浏览器。连接受防火墙或热点客户端隔离影响时可输入设备 IP。
+
+以下 `dist/`、`windows/` 和 `lan/` 说明保留早期网页与离线版用法；**最新安装包从 `native/` 构建**。
 
 ## 功能
 
@@ -36,9 +47,9 @@
 
 “知识节有题”不代表已经穷尽全部规则、例外和跨章综合考法。请结合教材、考试大纲及各科覆盖清单核对。
 
-## Windows 下载与构建
+## 早期 Windows 离线版下载与构建
 
-[下载最新版 Windows 离线 EXE](downloads/windows/CPA会计从零刷题_离线版_Windows.exe)
+[下载早期 Windows 离线 EXE](downloads/windows/CPA会计从零刷题_离线版_Windows.exe)
 
 当前版本为 **1.2.0.0**，内嵌六科共 4,412 题和 12 个下载文件，使用默认浏览器打开，不需要 HTTP 服务。文件名保留旧版名称以兼容下载路径。需要 Windows 的 .NET Framework 4。
 
@@ -66,6 +77,12 @@ python -m http.server 8000 --bind 127.0.0.1 --directory dist
 
 项目采用静态 HTML、CSS 和原生 JavaScript，不需要数据库、登录服务或第三方 npm/pip 依赖。将完整 `dist/` 发布为静态站点即可；推送 GitHub 本身不等于已启用网站托管。
 
+## 早期 Python 局域网版
+
+电脑运行 `python lan/server.py`，Windows 可双击 `lan/start-windows.bat`。手机通过同一热点或 Wi-Fi 打开启动窗口显示的电脑局域网地址，两端输入相同配对码。当前设备自动上传进度，另一端点击“在本机继续”接管。一次一台设备答题，版本检查和备份防止旧端覆盖新记录。服务需要 Python 3.9+，无第三方依赖。
+
+详见 [局域网使用说明](lan/使用说明.md)。此段仅描述旧的浏览器局域网版；最新 APK / EXE 设备同步见上方。旧 APK/EXE 的记录不会自动迁移到 Python 局域网网页。静态站点和重新打包的离线网页支持进度备份，但只有通过局域网服务地址打开才能配对。
+
 ## 数据保存
 
 `cpa-accounting-zero-v1` 保存累计统计、错题、标记、选项随机设置和练习历史；`cpa-practice-sessions-v1` 保存各科当前会话、最后打开的科目和字号。保存会话时只保存题号，不复制题库正文。
@@ -74,7 +91,7 @@ python -m http.server 8000 --bind 127.0.0.1 --directory dist
 
 旧版累计统计和已保存的当前作答继续保留；历史功能上线前没有记录的逐次答案无法补回。损坏存储或已删除题号会安全回到新练习，页面会提示存储是否可用。
 
-记录仅保存在当前浏览器与用户配置。不同来源（协议、域名、端口或本地文件路径）的数据分别保存；网页版、Android 和 Windows 不自动跨设备同步。清除站点或应用数据会删除记录。
+记录仅保存在当前浏览器与用户配置。不同来源（协议、域名、端口或本地文件路径）的数据分别保存；未配对的网页版、Android 和 Windows 不自动跨设备同步；局域网版配对后可同步网页记录。清除站点或应用数据会删除记录。
 
 ## 源码与题库维护
 
@@ -132,7 +149,7 @@ try { node verify.mjs } finally { Pop-Location }
 
 ## 限制与授权
 
-- 综合阶段题库及 Android 原生壳源码尚未提供。
+- 综合阶段题库尚未提供；Android 原生壳源码已包含在 `native/android/`，签名私钥不随仓库分发。
 - 简答自评与客观题判分不能代表正式考试评分。
 - 部分题源标注所属知识节阅读范围；税法和战略补充题另标知识点所在页。
 - 税法扫描缺少印刷页 628—629，相关旧题引用官方补充来源；规则变化时需人工复核。

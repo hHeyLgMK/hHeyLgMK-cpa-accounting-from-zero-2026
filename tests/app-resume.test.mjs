@@ -11,7 +11,7 @@ import {readProgress,writeProgress} from '../dist/progress.js';
 const source = fs.readFileSync(new URL('../dist/app.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'');
 // Run the production application with an in-memory DOM and persistent storage.
 // A fresh VM represents reopening the application; no session variables survive.
-function boot(disk=new Map(), script=source) {
+function boot(disk=new Map(), script=source, syncFactory) {
   const nodes = new Map(), events = {}, timers = new Map();
   let timerId=0;
   class Node {
@@ -38,7 +38,7 @@ function boot(disk=new Map(), script=source) {
     window:{addEventListener:(name,fn)=>{events[name]=fn;}},
     localStorage:{getItem:key=>disk.get(key)??null,setItem:(key,value)=>disk.set(key,value)},
     setInterval:fn=>{timers.set(++timerId,fn);return timerId;},clearInterval:id=>timers.delete(id),
-    matchMedia:()=>({matches:false}),accountingChapters,accountingQuestions,extraSubjects,strategySubject,questionNumbers,readProgress,writeProgress,
+    createLanSync:syncFactory,matchMedia:()=>({matches:false}),accountingChapters,accountingQuestions,extraSubjects,strategySubject,questionNumbers,readProgress,writeProgress,
     URL:{createObjectURL:()=> 'blob:test'},Blob,Uint8Array,atob});
   vm.runInContext(script,context,{timeout:10000});
   return {disk,nodes,events,timers,run:code=>vm.runInContext(code,context),
@@ -147,4 +147,31 @@ test('progress from the previous Windows release gains history metadata while pr
   assert.equal(app.run('session.id'),id);
   app.run('selectChoice(current(),2);submitAnswer()');
   assert.equal(app.run('data.history.length'),1);assert.equal(app.run('data.history[0].id'),id);
+});
+
+
+test('LAN handoff reinitializes the actual application without duplicating scores or history',()=>{
+  let firstHooks, secondHooks;
+  const first=boot(new Map(),source,hooks=>{firstHooks=hooks;return {canEdit:()=>true};});
+  first.run("openSubject('strategy');selectChoice(current(),1);submitAnswer();navigate(4);selectChoice(current(),2)");
+  const expected=first.json('({subjectId,session,data})');
+  const second=boot(new Map(),source,hooks=>{secondHooks=hooks;return {canEdit:()=>false};});
+  secondHooks.apply(firstHooks.snapshot());
+  assert.equal(JSON.stringify(secondHooks.snapshot()),JSON.stringify(firstHooks.snapshot()));
+  assert.deepEqual(second.json('data'),expected.data);
+  second.run('navigate(0);submitAnswer()');
+  assert.deepEqual(second.json('data.records'),expected.data.records);
+  assert.equal(second.json('data.history').length,expected.data.history.length);
+});
+test('passive LAN device does not decrement mock time; invalid import preserves original keys',()=>{
+  let hooks, editable=true;
+  const app=boot(new Map(),source,value=>{hooks=value;return {canEdit:()=>editable};});
+  app.run('openAccounting();startMock()');
+  editable=false;
+  const time=app.run('session.seconds');
+  for(const tick of app.timers.values())tick();
+  assert.equal(app.run('session.seconds'),time);
+  const before=new Map(app.disk);
+  assert.throws(()=>hooks.apply({data:'{}',progress:'invalid'}));
+  assert.deepEqual(app.disk,before);
 });

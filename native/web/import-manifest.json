@@ -1,0 +1,26 @@
+{
+  "apkSha256": "7050ef29b120116aa2de5aea258cda3094cc4f8eb9144b87bcc97f89fba8a133",
+  "htmlSha256": "3749860d69c0f8f193ff9728d9243bb271ec19b989c07cc15c30b12997799b08",
+  "files": {
+    "basic-theory.js": "2cf8cfcf779282e40c95d464b78dd5cab2099d6cf252bf1a06c86f4e057ff231",
+    "accounting-expanded.js": "4df8d0ba4e10bce0513dfcdeeb431ccadb980842b018ff485108c958f2fc07b3",
+    "extra-subjects.js": "8ccd4a962129f51b89176fcb8577ac37e850fcbf9b49a5220618de6d17928361",
+    "strategy.js": "4e7c4ecf406f59cc1d9affd039e4414a918f20ace39a92f351256ba22989dd2a",
+    "question-numbers.js": "f7d2c615e75c8ab66db91b53eac36bf4748887734aa0b39e54fcc1edaf618143",
+    "questions.js": "da88233b6924105ada600833eea4b9a6de3be48cc676d59b0813880ddd79c25d",
+    "app.js": "4ec72866e58b37f5358cf93cebba36526a1916d023dbbc6b1e5dd9f5a72dcf51",
+    "app.css": "d04e0bf398723aa0fba8266cd821ab3c00dbc795bdaafd991657574d0e791589",
+    "index.html": "c9d947b5f4d22ced734911a96c017c1ad76ea227c7c9e19cc8c746b8ae5a4b0e",
+    "questions.csv": "86a99ae8a13cd9f1326c03ad80b2cc19212d52e61010c892e448fb5201b3eaf4",
+    "law-questions.csv": "0ce45c3401134d88ee9b14dae1035d01042b0a72e2743f8ce40312723690a0e3",
+    "finance-questions.csv": "956b2903e084375c0e3718d3647d1cd08036955f58b86575426b505229758ede",
+    "tax-questions.csv": "35637c3bcc8b04ba7370bdd72f6e06ef22d56d746f8690b96fb651a437dd17b5",
+    "audit-questions.csv": "98655b64a52419aaa42db41cac5cac6f6985c7bdf96fa8e3ec22f6281db7ed56",
+    "strategy-questions.csv": "cc78fee41e4bec05900acdf3f517f275d98891d7af122c5838af5d5dfe1b1776",
+    "knowledge-points.csv": "7cf1a2128ce628b82401fd81bc2f50389aa84906a5c2c4f4e15c6a5d8098c6cb",
+    "strategy-coverage.csv": "b036d46855e6c6234fd5459fc955eb78be646decdf24c7c828c32ed02de9134e",
+    "study-guide.md": "4e9131c95e53338cd0dee228ff61389ae374294d9b3556a7499e705ac2b262d7",
+    "strategy-guide.md": "b28f08ca94c5369c9524c9f89d50ef5e9db30aa2225000d311ead703abd488dd",
+    "tax-coverage-audit.md": "e3dcc2af4bfd93117de7ba0a794cfe764319ea5d4309a7e2415cc4142f3dcdae"
+  }
+}

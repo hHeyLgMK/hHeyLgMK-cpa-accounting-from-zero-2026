@@ -5,8 +5,9 @@ import javax.net.ssl.*;
 import org.json.*;
 public class PeerHarness {
  public static void main(String[] args)throws Exception {
-  KeyStore ks=KeyStore.getInstance("PKCS12");ks.load(new FileInputStream(args[0]),new char[0]);
-  KeyManagerFactory km=KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());km.init(ks,new char[0]);
+  String password=System.getenv("CPA_TEST_CERT_PASSWORD");char[] pass=password==null?new char[0]:password.toCharArray();
+  KeyStore ks=KeyStore.getInstance("PKCS12");ks.load(new FileInputStream(args[0]),pass);
+  KeyManagerFactory km=KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());km.init(ks,pass);
   SSLContext ctx=SSLContext.getInstance("TLS");ctx.init(km.getKeyManagers(),null,new SecureRandom());
   String alias=ks.aliases().nextElement(),id=PeerNode.hex(MessageDigest.getInstance("SHA-256").digest(ks.getCertificate(alias).getEncoded()));
   PeerNode node=new PeerNode(ctx,id,new File(args[1]),"Android-test",args[2],Integer.parseInt(args[3]));

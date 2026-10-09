@@ -77,8 +77,8 @@ export function createPeerSync(options) {
       }
       await publish();
       const list=await request({action:'peers'});
-      const paired=list.peers.filter(p=>p.paired);
-      status=paired.length?(paired.some(p=>p.status.startsWith('未连接'))?'部分设备未连接，本机记录已保留':'记录已同步，可选择继续对方进度'):'已就绪，请先配对附近设备';
+      const active=list.peers.filter(p=>p.syncing);
+      status=active.length?(active.some(p=>(p.status||'').startsWith('未连接'))?'部分设备未连接，本机记录已保留':'记录已同步，可选择继续对方进度'):'已就绪，发现设备后点击“同步”';
       draw(list.peers);
     }catch(e){status=e.message;draw();}finally{busy=false;}
   }
@@ -88,23 +88,23 @@ export function createPeerSync(options) {
     if(!view||!view.isConnected)return;
     view.querySelector('[data-status]').textContent=status;
     if(!info)return;
-    view.querySelector('[data-info]').textContent=info.alias+' · '+(info.ips||[]).join(' / ')+'\n本机配对码：'+info.pin;
+    view.querySelector('[data-info]').textContent=info.alias+' · '+(info.ips||[]).join(' / ');
     if(!peers)return;
     const list=view.querySelector('[data-peers]');list.replaceChildren();
     for(const peer of peers){
       const card=node('div');card.className='peer-card';
-      card.append(node('strong',peer.alias),node('p',peer.host+':'+peer.port+' · '+(peer.paired?(peer.status||'已配对'):'未配对')));
-      if(!peer.paired){
-        const pin=node('input');pin.placeholder='输入对方显示的 8 位配对码';pin.inputMode='numeric';pin.maxLength=8;pin.autocomplete='off';
-        card.append(pin,button('配对',async()=>{if(!/^\d{8}$/.test(pin.value))throw Error('请输入 8 位配对码');await request({action:'pair',id:peer.id,pin:pin.value});await cycle();}));
-      }else{
+      card.append(node('strong',peer.alias),node('p',peer.host+':'+peer.port+' · '+(peer.syncing?(peer.status||'自动同步中'):'可选择同步')));
+      if(!peer.directSync)card.append(node('p','请将对方更新到 3.2.2 或以上版本'));
+      else if(peer.bankId!==options.bankId)card.append(node('p','题库版本不同，请更新两端'));
+      else card.append(button('同步',async()=>{await request({action:'connect',id:peer.id});await cycle();}));
+      if(peer.syncing){
         const message=inbox.find(x=>x.id===peer.id);
         if(message)card.append(button('在本机继续对方进度',async()=>{
           if(!confirm('将切换到对方发送的练习进度。当前进度会保留为恢复备份，答题统计会合并。请暂停对方作答。'))return;
           const value=decode(message);localStorage.setItem('cpa-before-peer-progress-v1',options.snapshot().progress);
           options.apply(value);latestProgress=options.snapshot().progress;progressAt=Date.now();lastPayload='';await cycle();status='已接续练习，可以关闭同步窗口答题。';draw();
         }));
-        card.append(button('取消配对',async()=>{await request({action:'forget',id:peer.id});delete saved.seen[peer.id];persist();await cycle();}));
+        card.append(button('停止同步',async()=>{await request({action:'forget',id:peer.id});delete saved.seen[peer.id];persist();await cycle();}));
       }
       list.append(card);
     }
@@ -115,7 +115,7 @@ export function createPeerSync(options) {
       view=node('div');view.className='peer-panel';
       const details=node('p');details.dataset.info='';details.style.whiteSpace='pre-wrap';
       const state=node('p',status);state.dataset.status='';state.setAttribute('role','status');
-      view.append(node('p','两端连接同一 Wi-Fi 或手机热点，并保持 EXE / APK 打开。首次配对后自动合并统计、错题、标记和历史；切换设备时点击“在本机继续对方进度”。'),details,state);
+      view.append(node('p','两端连接同一 Wi-Fi 或手机热点，并保持 EXE / APK 打开。发现设备后点击“同步”，自动合并统计、错题、标记和历史；切换设备时点击“在本机继续对方进度”。'),details,state);
       view.append(button('查找附近设备',async()=>{await request({action:'discover'});await cycle();}));
       const list=node('div');list.dataset.peers='';view.append(list);
       const host=node('input');host.placeholder='对方 IP，例如 192.168.43.1';host.inputMode='decimal';

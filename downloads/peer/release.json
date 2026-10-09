@@ -1,19 +1,19 @@
 {
-  "version": "3.2.1",
+  "version": "3.2.2",
   "androidPackage": "cn.cpa26.workbook",
-  "androidVersionCode": 35,
+  "androidVersionCode": 36,
   "questionCount": 4412,
   "bankId": "ad109db51aa2c92b3d97a484b9e6124b43d0c0beacb89b54f45319c4785f6ddd",
   "androidSigningCertificateSha256": "1de9c770a302c6e74625ed68a8763f64f5f69205e977a6f4018c03905013933e",
   "files": {
     "CPA刷题库_设备同步_Android.apk": {
-      "sha256": "958c3f9a06fd0bf8f5feb93b8f0b58d60ecc53c6d9418d6b49a76c6f90f85278",
+      "sha256": "7bf188792b784d50e234fb51717cb79dcf9f1e980366c96c0bc6f13719be77f1",
       "bytes": 1716753
     },
     "CPA刷题库_设备同步_Windows.exe": {
-      "sha256": "ecf167ca82ec142fe67787378af9020cebcca512bb728997f1fc863b31f1deb8",
-      "bytes": 1720832
+      "sha256": "d9d7300600c399e49c824e88dfa45c173bb4c2a6481fa9dc189586d9317a161c",
+      "bytes": 1721344
     }
   },
-  "windowsVersion": "3.2.1.1"
+  "windowsVersion": "3.2.2.0"
 }

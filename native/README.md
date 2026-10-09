@@ -1,4 +1,4 @@
-# CPA刷题库 3.2.1 原生设备同步版
+# CPA刷题库 3.2.2 原生设备同步版
 
 `web/` 是 APK 和 EXE 共用的实际界面与题库源码；`android/` 是 WebView、AndroidKeyStore 身份和 Java 设备通信；`windows/PeerApp.cs` 是 Windows 本地启动器与通信。`dist/` 属于早期网页版本。
 
@@ -6,17 +6,25 @@
 
 点击左上角“CPA刷题库”打开侧边菜单，进入选科、练习历史或设备同步。关闭应用会保存题号、选择、简答草稿、提交状态和模拟剩余时间；重新打开不会重复计分。累计统计、错题、标记和历史兼容原六科离线版存储。旧版从未保存的草稿无法补回。
 
-Android 8.0+，包名 `cn.cpa26.workbook`，版本码 35。保留原签名证书和 WebView 来源，可覆盖同包名六科离线版 3.0.3 和设备同步版 3.2.0。不同包名的独立续答版不能被本包覆盖。
+Android 8.0+，包名 `cn.cpa26.workbook`，版本码 36。保留原签名证书和 WebView 来源，可覆盖同包名六科离线版 3.0.3 和设备同步版 3.2.0 / 3.2.1。不同包名的独立续答版不能被本包覆盖。
 
 Windows 需要 .NET Framework 4；运行 EXE 后通过默认浏览器答题。EXE 保持运行才能发现、同步设备；再次运行打开相同本机页面。原来通过文件网页打开的旧 Windows 版记录使用不同来源，可通过进度备份导入迁移。
 
-Windows 安装包已修订为 **3.2.1.1**：修复首次运行时“无法生成设备证书”，正确传递 Unicode 证书名称，创建可持久化的 RSA 设备身份。已有设备证书继续沿用，题库和 Android 3.2.1 安装包未变。
+Windows 安装包为 **3.2.2.0**，保留 3.2.1.1 的证书启动修复。已有设备证书继续沿用，六科题库不变。
 
-两端连接同一热点或 Wi-Fi，在菜单中打开设备同步，选择对方并输入对方的 8 位配对码。配对后自动交换记录；按“在本机继续对方进度”接管未完成练习。请一次在一台设备继续同一场练习。错题连续答对三次移出，多次收到同一提交事件不会重复累计。
+两端连接同一热点或 Wi-Fi，在菜单中打开设备同步，发现对方后点击“同步”。选择后自动交换记录，取消配对码输入步骤；按“在本机继续对方进度”接管未完成练习，点击“停止同步”停止本机与该设备的连接。请一次在一台设备继续同一场练习。错题连续答对三次移出，多次收到同一提交事件不会重复累计。两端均需更新到 3.2.2 或以上版本。
 
-协议为本项目的 `cpa-p2p-v1`，不是 LocalSend 协议。UDP 多播 `224.0.0.169:53319` 用于发现，TCP/TLS 53319 用于设备通信，Windows 本机网页为 `127.0.0.1:53320`。首次配对后固定证书指纹并保存设备令牌。端口被占用、防火墙、访客网络和热点隔离会影响连接；发现失败可手动输入 IP。
+数据格式保留 `cpa-p2p-v1`，设备发现协议版本为 2，并声明 `directSync`。UDP 多播 `224.0.0.169:53319` 用于发现，TCP/TLS 53319 用于设备通信，Windows 本机网页为 `127.0.0.1:53320`。点击同步后自动建立连接，保存证书指纹和通信令牌；同时点击不会重置令牌而中断连接。端口被占用、防火墙、访客网络和热点隔离会影响连接；发现失败可手动输入 IP。
 
 ## 构建
+
+Windows 上构建 Android APK，可使用 JDK 21、Android 34 平台和 SDK Build-Tools 35.0.0：
+
+```powershell
+python -X utf8 native/android/build-windows.py --tool-paths /path/to/paths.json --signing-key /private/signing_key.pem --node node
+```
+
+工具 JSON 提供 `java`、`javac`、`android_jar`、`aapt2`（或 `aapt`，从同目录定位 aapt2）、`d8`、`zipalign`、`apksigner` 的本地路径。脚本先核对私钥与公开签名证书匹配，使用 aapt2 / D8 打包，以原证书签名并执行 apksigner 验证，更新 APK 哈希。临时 PKCS8 私钥在 `finally` 中删除，原私钥必须位于仓库外。
 
 仅构建 Windows EXE，可在 Windows 仓库根目录执行（需要 Node.js 和系统 .NET Framework C# 编译器，不需要 Android 签名私钥）：
 
@@ -70,6 +78,8 @@ node --test tests/*.test.mjs
 python native/tests/transport_test.py /path/to/tools-root
 ```
 
-自动检查覆盖六科数据、退出续答、草稿和计时接管、幂等合并、实际 3.0.3 界面产生的旧存储升级、Java 与 EXE 的双向 TLS 通信、配对码拒绝、来源保护和重启持久化。通信联测在 Linux/Mono 和 JVM 回环环境执行，尚未在用户手机、热点和真实 Windows 环境实测。
+Windows 上可运行 `python native/tests/transport_test.py --tool-paths /path/to/paths.json`，JSON 另需 `json_jar` 指向 JVM 使用的 org.json 实现。
+
+当前 35 项 Node 测试通过，覆盖六科数据、退出续答、草稿和计时接管、幂等合并、实际 3.0.3 旧存储升级、直接同步页面和旧协议提示。生产 Java 与实际 Windows EXE 联测通过组播发现、直接连接、双向 TLS、并发连接、来源保护、重启持久化及停止后重连；Windows 原生证书与启动测试通过。手机与电脑热点之间的实际互通尚未实测。
 
 `web/import-manifest.json` 记录导入时的原始 APK 网页与文件哈希，是来源记录；其中界面文件随后已增加续答、同步和菜单功能。`tests/fixtures/3.0.3-app.js` 保留原 APK 应用逻辑以验证真实旧存储兼容；题库由测试注入当前校验一致的原版数据。

@@ -4,18 +4,18 @@
 
 本次源码和题库取自用户提供的 `CPA刷题库_六科离线版_Android-3.apk` 内置 `assets/index.html`，合并仓库已有的退出续答功能。导入来源、原始文件哈希和题目数据哈希见 [content/android-import.json](content/android-import.json)。最新 Android 和 Windows 原生设备同步源码见 `native/`。
 
-## 最新安装包：3.2.1
+## 最新安装包：3.2.2
 
-- [Android APK：侧边菜单、退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Android.apk)
-- [Windows EXE：3.2.1.1 证书启动修复、退出续答、设备同步](downloads/peer/CPA刷题库_设备同步_Windows.exe)
+- [Android APK：3.2.2，发现设备后直接同步](downloads/peer/CPA刷题库_设备同步_Android.apk)
+- [Windows EXE：3.2.2.0，发现设备后直接同步](downloads/peer/CPA刷题库_设备同步_Windows.exe)
 - [完整构建与升级说明](native/README.md)、[安装包 SHA-256](downloads/peer/SHA256SUMS.txt)
 - [2026-10-09 更新与本次同步验证记录](docs/updates/2026-10-09.md)
 
 点击左上角“CPA刷题库”打开左侧菜单，集中进入选科、练习历史和设备同步。六科共 4,412 题保持原题号、题干、答案及来源。
 
-Android 包名 `cn.cpa26.workbook`、版本 `3.2.1`、版本码 `35`，沿用原六科离线版的签名证书。原六科离线版 3.0.3 / 同包名 3.2.0 可直接覆盖升级；独立包名 `cn.cpa26.workbookresume` 的旧续答版属于另一应用。请保留原应用数据，勿先卸载。
+Android 包名 `cn.cpa26.workbook`、版本 `3.2.2`、版本码 `36`，沿用原六科离线版的签名证书。原六科离线版 3.0.3 / 同包名 3.2.0 / 3.2.1 可直接覆盖升级；独立包名 `cn.cpa26.workbookresume` 的旧续答版属于另一应用。请保留原应用数据，勿先卸载。
 
-新设备同步版直接运行 APK / EXE，在同一 Wi-Fi 或热点内发现设备、输入对方配对码，配对后交换记录。未提交的练习使用“在本机继续对方进度”接管。无需启动 Python 服务；不与 LocalSend 软件互通。Android 需 8.0+；Windows 使用 .NET Framework 4 和默认浏览器。连接受防火墙或热点客户端隔离影响时可输入设备 IP。
+新设备同步版直接运行 APK / EXE，在同一 Wi-Fi 或热点内发现设备，点击目标设备的“同步”即可交换记录，取消配对码步骤。选择后持续自动合并统计、错题、标记和历史，可点击“停止同步”。未提交的练习使用“在本机继续对方进度”接管。两端都需要 3.2.2 或以上版本。无需启动 Python 服务；不与 LocalSend 软件互通。Android 需 8.0+；Windows 使用 .NET Framework 4 和默认浏览器。连接受防火墙或热点客户端隔离影响时可输入设备 IP。
 
 以下 `dist/`、`windows/` 和 `lan/` 说明保留早期网页与离线版用法；**最新安装包从 `native/` 构建**。
 

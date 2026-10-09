@@ -16,8 +16,8 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-[assembly: System.Reflection.AssemblyVersion("3.2.1.1")]
-[assembly: System.Reflection.AssemblyFileVersion("3.2.1.1")]
+[assembly: System.Reflection.AssemblyVersion("3.2.2.0")]
+[assembly: System.Reflection.AssemblyFileVersion("3.2.2.0")]
 [assembly: System.Reflection.AssemblyProduct("CPA 刷题库 · 设备同步")]
 
 public sealed class PeerApp : IDisposable {
@@ -27,8 +27,7 @@ public sealed class PeerApp : IDisposable {
  readonly object gate=new object();
  readonly Dictionary<string,Dictionary<string,object>> peers=new Dictionary<string,Dictionary<string,object>>();
  readonly Dictionary<string,Dictionary<string,object>> inbox=new Dictionary<string,Dictionary<string,object>>();
- readonly Dictionary<string,int> attempts=new Dictionary<string,int>();
- readonly string directory, id,alias,pin,localToken;
+ readonly string directory, id,alias,localToken;
  readonly X509Certificate2 cert;
  Dictionary<string,object> published;
  TcpListener remoteListener,localListener;UdpClient udp;
@@ -44,8 +43,7 @@ public sealed class PeerApp : IDisposable {
  static bool Equal(string a,string b){if(a.Length!=b.Length)return false;int x=0;for(int i=0;i<a.Length;i++)x|=a[i]^b[i];return x==0;}
  public PeerApp(string dataDir,string testCert=null,string testHTML=null,int remotePort=Port,int localPort=LocalPort){
   directory=dataDir;Directory.CreateDirectory(directory);alias=Environment.MachineName;localToken=RandomToken();
-  var bytes=new byte[4];using(var rng=RandomNumberGenerator.Create())rng.GetBytes(bytes);pin=(BitConverter.ToUInt32(bytes,0)%100000000).ToString("D8");
-  cert=testCert==null?LoadCertificate():new X509Certificate2(testCert,"",X509KeyStorageFlags.Exportable);
+  cert=testCert==null?LoadCertificate():new X509Certificate2(testCert,Environment.GetEnvironmentVariable("CPA_TEST_CERT_PASSWORD")??"",X509KeyStorageFlags.Exportable);
   using(var h=SHA256.Create())id=Hex(h.ComputeHash(cert.RawData));
   if(testHTML!=null)html=File.ReadAllText(testHTML,Encoding.UTF8);
   else using(var s=typeof(PeerApp).Assembly.GetManifestResourceStream("CPAPeer.html.gz"))using(var gz=new GZipStream(s,CompressionMode.Decompress))using(var reader=new StreamReader(gz,Encoding.UTF8))html=reader.ReadToEnd();
@@ -82,7 +80,8 @@ public sealed class PeerApp : IDisposable {
   }
  }
  static IEnumerable<IPAddress> LocalIPs(){return NetworkInterface.GetAllNetworkInterfaces().Where(n=>n.OperationalStatus==OperationalStatus.Up).SelectMany(n=>n.GetIPProperties().UnicastAddresses).Select(a=>a.Address).Where(a=>a.AddressFamily==AddressFamily.InterNetwork&&!IPAddress.IsLoopback(a));}
- Dictionary<string,object> Info(){return D("service",Service,"version",1,"id",id,"alias",alias,"port",((IPEndPoint)remoteListener.LocalEndpoint).Port,"bankId",Bank);}
+ static bool Direct(Dictionary<string,object> peer){return Text(peer,"directSync").Equals("true",StringComparison.OrdinalIgnoreCase);}
+ Dictionary<string,object> Info(){return D("service",Service,"version",2,"directSync",true,"id",id,"alias",alias,"port",((IPEndPoint)remoteListener.LocalEndpoint).Port,"bankId",Bank);}
  void Load(){string file=Path.Combine(directory,"state.json");if(!File.Exists(file))return;var d=Obj(json.DeserializeObject(File.ReadAllText(file,Encoding.UTF8)));object[] ps;
   if(d.ContainsKey("peers")&&(ps=d["peers"] as object[])!=null)foreach(var v in ps){var p=Obj(v);peers[Text(p,"id")]=p;}
   if(d.ContainsKey("inbox")&&(ps=d["inbox"] as object[])!=null)foreach(var v in ps){var p=Obj(v);inbox[Text(p,"id")]=p;}
@@ -94,7 +93,7 @@ public sealed class PeerApp : IDisposable {
  }}
  void Remember(Dictionary<string,object> value,string host){string pid=Text(value,"id");int port=Number(value,"port");IPAddress ip;
   if(pid.Length!=64||!pid.All(c=>"abcdef0123456789".Contains(c))||pid==id||port<1||port>65535||Text(value,"service")!=Service||!IPAddress.TryParse(host,out ip)||!Private(ip))return;
-  lock(gate){Dictionary<string,object> p;if(!peers.TryGetValue(pid,out p)){p=D();peers[pid]=p;}p["id"]=pid;p["alias"]=Text(value,"alias","设备");p["host"]=host;p["port"]=port;p["bankId"]=Text(value,"bankId");}
+  lock(gate){Dictionary<string,object> p;if(!peers.TryGetValue(pid,out p)){p=D();peers[pid]=p;}p["id"]=pid;p["alias"]=Text(value,"alias","设备");p["host"]=host;p["port"]=port;p["bankId"]=Text(value,"bankId");p["directSync"]=Direct(value);}
  }
  static bool Private(IPAddress a){if(IPAddress.IsLoopback(a)||a.IsIPv6LinkLocal)return true;var b=a.GetAddressBytes();return b.Length==4&&(b[0]==10||b[0]==192&&b[1]==168||b[0]==172&&b[1]>=16&&b[1]<=31||b[0]==169&&b[1]==254);}
  void Announce(bool first){if(udp==null)return;try{var value=Info();value["announce"]=first;byte[] bytes=Encoding.UTF8.GetBytes(json.Serialize(value));foreach(var ip in LocalIPs())try{udp.Client.SetSocketOption(SocketOptionLevel.IP,SocketOptionName.MulticastInterface,ip.GetAddressBytes());udp.Send(bytes,bytes.Length,new IPEndPoint(IPAddress.Parse(Group),Port));}catch{}}catch{}}
@@ -104,16 +103,18 @@ public sealed class PeerApp : IDisposable {
   var next=new Dictionary<string,object>(wrapper);next["id"]=pid;next["alias"]=Text(peers[pid],"alias");next["receivedAt"]=DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();inbox[pid]=next;try{Persist();}catch{if(old==null)inbox.Remove(pid);else inbox[pid]=old;throw;}
  }}
  public Dictionary<string,object> Local(Dictionary<string,object> request){string action=Text(request,"action");
-  if(action=="info"){var value=Info();value["pin"]=pin;value["ips"]=LocalIPs().Select(a=>a.ToString()).ToArray();return value;}
+  if(action=="info"){var value=Info();value["ips"]=LocalIPs().Select(a=>a.ToString()).ToArray();return value;}
   if(action=="discover"){Announce(true);return D("ok",true);}
-  if(action=="peers"){lock(gate)return D("peers",peers.Values.Select(p=>D("id",Text(p,"id"),"alias",Text(p,"alias"),"host",Text(p,"host"),"port",Number(p,"port"),"paired",p.ContainsKey("outToken"),"status",Text(p,"status"))).ToArray());}
+  if(action=="peers"){lock(gate)return D("peers",peers.Values.Select(p=>D("id",Text(p,"id"),"alias",Text(p,"alias"),"host",Text(p,"host"),"port",Number(p,"port"),"directSync",Direct(p),"bankId",Text(p,"bankId"),"syncing",p.ContainsKey("outToken")&&Direct(p),"status",Text(p,"status"))).ToArray());}
   if(action=="manual"){string host=Text(request,"host");IPAddress ip;if(!IPAddress.TryParse(host,out ip)||!Private(ip))throw new Exception("请输入局域网 IP");var p=D("host",host,"port",Number(request,"port",Port));var value=Remote(p,"info",null,null);Remember(value,host);return value;}
-  if(action=="pair"){Dictionary<string,object> p;lock(gate){if(!peers.TryGetValue(Text(request,"id"),out p))throw new Exception("设备尚未发现");}
-   if(Text(p,"bankId")!=Bank)throw new Exception("题库版本不同，请更新两端");string back=RandomToken();var value=Remote(p,"pair",D("pin",Text(request,"pin"),"info",Info(),"backToken",back),null);
-   lock(gate){p["inToken"]=back;p["outToken"]=Text(value,"token");Persist();}return D("ok",true);
+  if(action=="connect"){Dictionary<string,object> p;string back;lock(gate){if(!peers.TryGetValue(Text(request,"id"),out p))throw new Exception("设备尚未发现");
+    if(Text(p,"bankId")!=Bank)throw new Exception("题库版本不同，请更新两端");if(!Direct(p))throw new Exception("请将对方更新到 3.2.2 或以上版本");
+    if(!p.ContainsKey("inToken")){p["inToken"]=RandomToken();Persist();}back=Text(p,"inToken");}
+   var value=Remote(p,"connect",D("info",Info(),"backToken",back),null);string token=Text(value,"token");if(token.Length!=64||!token.All(c=>"abcdef0123456789".Contains(c)))throw new Exception("无效的同步响应");
+   lock(gate){p["outToken"]=token;Persist();}return D("ok",true);
   }
   if(action=="publish"){string payload=Text(request,"payload");var next=D("payload",payload,"hash",Hash(payload));Validate(next);lock(gate){var previous=published;published=next;try{Persist();}catch{published=previous;throw;}}return D("hash",Text(next,"hash"));}
-  if(action=="exchange"){Dictionary<string,object>[] list;lock(gate)list=peers.Values.Where(p=>p.ContainsKey("outToken")).Select(p=>new Dictionary<string,object>(p)).ToArray();
+  if(action=="exchange"){Dictionary<string,object>[] list;lock(gate)list=peers.Values.Where(p=>p.ContainsKey("outToken")&&Direct(p)).Select(p=>new Dictionary<string,object>(p)).ToArray();
    foreach(var p in list)try{Dictionary<string,object> own;lock(gate)own=published;var result=Remote(p,"sync",D("senderId",id,"snapshot",own),Text(p,"outToken"));Receive(Text(p,"id"),Obj(result["snapshot"]));lock(gate)if(peers.ContainsKey(Text(p,"id")))peers[Text(p,"id")]["status"]="已同步";
    }catch(Exception e){lock(gate)if(peers.ContainsKey(Text(p,"id")))peers[Text(p,"id")]["status"]="未连接："+e.Message;}
    lock(gate)return D("inbox",inbox.Values.ToArray());
@@ -123,12 +124,12 @@ public sealed class PeerApp : IDisposable {
  }
  Dictionary<string,object> Handle(string path,string auth,Dictionary<string,object> req,string host){
   if(path=="/api/cpa/v1/info")return Info();
-  if(path=="/api/cpa/v1/pair")lock(gate){int count;attempts.TryGetValue(host,out count);if(count>=5)throw new Exception("配对尝试过多，请重启接收端后重试");if(!Equal(pin,Text(req,"pin"))){attempts[host]=count+1;throw new Exception("配对码错误");}
-   var identity=Obj(req["info"]);if(Text(identity,"bankId")!=Bank)throw new Exception("题库版本不同");string back=Text(req,"backToken");if(back.Length!=64||!back.All(c=>"abcdef0123456789".Contains(c)))throw new Exception("invalid token");
-   Remember(identity,host);Dictionary<string,object> p;if(!peers.TryGetValue(Text(identity,"id"),out p))throw new Exception("invalid peer");string token=RandomToken();p["outToken"]=back;p["inToken"]=token;Persist();return D("token",token);
+  if(path=="/api/cpa/v1/connect")lock(gate){
+   var identity=Obj(req["info"]);if(!Direct(identity)||Number(identity,"version")<2)throw new Exception("请更新设备同步版本");if(Text(identity,"bankId")!=Bank)throw new Exception("题库版本不同");string back=Text(req,"backToken");if(back.Length!=64||!back.All(c=>"abcdef0123456789".Contains(c)))throw new Exception("invalid token");
+   Remember(identity,host);Dictionary<string,object> p;if(!peers.TryGetValue(Text(identity,"id"),out p))throw new Exception("invalid peer");p["outToken"]=back;if(!p.ContainsKey("inToken"))p["inToken"]=RandomToken();Persist();return D("token",Text(p,"inToken"));
   }
   if(path!="/api/cpa/v1/sync")throw new Exception("not found");string pid=Text(req,"senderId");lock(gate){Dictionary<string,object> p;
-   if(!peers.TryGetValue(pid,out p)||!p.ContainsKey("inToken")||!Equal("Bearer "+Text(p,"inToken"),auth))throw new Exception("尚未配对");p["host"]=host;Receive(pid,Obj(req["snapshot"]));return D("snapshot",published);
+   if(!peers.TryGetValue(pid,out p)||!p.ContainsKey("inToken")||!Direct(p)||!Equal("Bearer "+Text(p,"inToken"),auth))throw new Exception("尚未选择同步此设备");p["host"]=host;Receive(pid,Obj(req["snapshot"]));return D("snapshot",published);
   }
  }
  static string Line(Stream s){var b=new MemoryStream();int c;while((c=s.ReadByte())!=-1&&c!=10){if(b.Length>8192)throw new Exception("header too large");if(c!=13)b.WriteByte((byte)c);}return c==-1&&b.Length==0?null:Encoding.UTF8.GetString(b.ToArray());}
@@ -167,17 +168,17 @@ public sealed class PeerApp : IDisposable {
  public void Dispose(){running=false;if(remoteListener!=null)remoteListener.Stop();if(localListener!=null)localListener.Stop();if(udp!=null)udp.Close();cert.Dispose();}
  [STAThread] public static void Main(string[] args){
   try{
-   if(args.Length>=3&&args[0]=="--test"){using(var node=new PeerApp(args[1],args[2],args.Length>3?args[3]:null,args.Length>4?int.Parse(args[4]):Port,args.Length>5?int.Parse(args[5]):LocalPort)){Console.WriteLine(node.json.Serialize(node.Local(D("action","info"))));Console.WriteLine(node.localToken);Console.Out.Flush();Thread.Sleep(Timeout.Infinite);}return;}
+   if(args.Length>=3&&args[0]=="--test"){Console.SetOut(new StreamWriter(Console.OpenStandardOutput(),new UTF8Encoding(false)){AutoFlush=true});Console.SetError(new StreamWriter(Console.OpenStandardError(),new UTF8Encoding(false)){AutoFlush=true});using(var node=new PeerApp(args[1],args[2],args.Length>3?args[3]:null,args.Length>4?int.Parse(args[4]):Port,args.Length>5?int.Parse(args[5]):LocalPort)){Console.WriteLine(node.json.Serialize(node.Local(D("action","info"))));Console.WriteLine(node.localToken);Console.Out.Flush();Thread.Sleep(Timeout.Infinite);}return;}
    if(args.Length==2&&args[0]=="--extract"){using(var s=typeof(PeerApp).Assembly.GetManifestResourceStream("CPAPeer.html.gz"))using(var gz=new GZipStream(s,CompressionMode.Decompress))using(var o=File.Create(args[1]))gz.CopyTo(o);return;}
    bool created;using(var mutex=new Mutex(true,"CPAStudyPeerAppV1",out created)){if(!created){System.Diagnostics.Process.Start("http://127.0.0.1:"+LocalPort+"/");return;}
     Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
     using(var node=new PeerApp(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"CPAStudyPeer"))){
      var form=new Form{Text="CPA 刷题库 · 设备直连",Width=470,Height=270,StartPosition=FormStartPosition.CenterScreen};
-     var label=new Label{Left=20,Top=20,Width=420,Height=120,Text="设备："+node.alias+"\n首次配对码："+node.pin+"\n打开手机 APK 的设备同步页，即可发现本机。\n程序内置通信功能，请保持此窗口打开。"};
+     var label=new Label{Left=20,Top=20,Width=420,Height=120,Text="设备："+node.alias+"\n两端连接同一 Wi-Fi 或手机热点。\n打开设备同步页，发现设备后直接点击同步。\n程序内置通信功能，请保持此窗口打开。"};
      var open=new Button{Left=20,Top=150,Width=160,Text="打开刷题页面"};open.Click+=(s,e)=>System.Diagnostics.Process.Start("http://127.0.0.1:"+LocalPort+"/");
      form.Controls.Add(label);form.Controls.Add(open);form.Shown+=(s,e)=>System.Diagnostics.Process.Start("http://127.0.0.1:"+LocalPort+"/");Application.Run(form);
     }
    }
-  }catch(Exception e){var socket=e as SocketException;string hint=socket!=null&&socket.SocketErrorCode==SocketError.AddressAlreadyInUse?"\n请退出旧的刷题直连程序后重试。":"";MessageBox.Show(e.Message+hint,"CPA 刷题库");}
+  }catch(Exception e){if(args.Length>0&&args[0]=="--test"){Console.Error.WriteLine(e);Environment.ExitCode=1;return;}var socket=e as SocketException;string hint=socket!=null&&socket.SocketErrorCode==SocketError.AddressAlreadyInUse?"\n请退出旧的刷题直连程序后重试。":"";MessageBox.Show(e.Message+hint,"CPA 刷题库");}
  }
 }

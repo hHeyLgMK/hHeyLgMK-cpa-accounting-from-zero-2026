@@ -684,7 +684,7 @@ function showHelp() {
     }
     body.append(el('p','','入口页可以选择六个专业阶段科目。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
     body.append(el('p','','当前科目、章节、知识节、题号、所选答案、简答草稿、解析和模拟剩余时间会自动保存在本设备。关闭后重新打开会继续上次作答；关闭期间暂停模拟计时。点击练习模式或切换章节会开始新的练习。'));
-    body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
+    body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案，回车提交当前答案。在简答输入框内，回车仍用于换行；模拟练习统一交卷。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
     const a = el('a','','打开中注协官方模拟练习网站');
@@ -867,6 +867,14 @@ document.addEventListener('keydown', e => {
   if (selectionOpen) return;
   if (!$('modal').hidden || e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
   if (typeof e.target?.closest === 'function' && e.target.closest('textarea, input, select, [contenteditable="true"], [role="textbox"]')) return;
+  if (e.key === 'Enter' && !e.shiftKey) {
+    const control = e.target?.closest?.('button, a, [role="button"]');
+    if (control && control.id !== 'submitBtn' && !control.classList?.contains('option')) return;
+    if ($('submitBtn').hidden || $('submitBtn').disabled) return;
+    e.preventDefault();
+    if (!e.repeat) submitAnswer();
+    return;
+  }
   if (['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key) && session.items.length) {
     e.preventDefault();
     navigate(session.index + (e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1));

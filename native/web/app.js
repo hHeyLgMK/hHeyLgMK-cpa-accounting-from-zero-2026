@@ -1029,7 +1029,7 @@ function showHelp() {
       body.append(el('p','',subjectId==='strategy'?'战略起步题标注知识节阅读范围，扩充题标注知识点所在教材页。知识点与题号对应表列出实际题目，尚不能据此断言每条细则和综合考法均已覆盖。':subjectId==='tax'?'税法原有逐节题标注所属知识节阅读范围，本次补充题标注知识点所在教材页；扫描缺少印刷页 628—629，相关信用管理题单列官方来源。目录逐节覆盖不代表穷尽所有例外与综合考法。':'新增题标注所属知识节的教材和 PDF 阅读范围。'));
     }
     body.append(el('p','','入口页可以选择六个专业阶段科目。返回选科页时会保留本次作答，并暂停模拟练习计时。'));
-    body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案。在输入答案、选择章节或使用计算器时，方向键不会切题。'));
+    body.append(el('p','','键盘操作：↑ 或 ← 切换到上一题，↓ 或 → 切换到下一题；数字键 1～4 可选答案，回车提交当前答案。在简答输入框内，回车仍用于换行；模拟练习统一交卷。'));
     body.append(el('p','','布局和题号导航、标记、计算器、交卷操作参考官方机考模拟练习系统。本站为独立制作的学习工具，非中注协官方练习网站，题目不是真题。'));
     const p = el('p');
     const a = el('a','','打开中注协官方模拟练习网站');
@@ -1231,6 +1231,14 @@ document.addEventListener('keydown', e => {
   if (selectionOpen) return;
   if (!$('modal').hidden || e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
   if (typeof e.target?.closest === 'function' && e.target.closest('textarea, input, select, [contenteditable="true"], [role="textbox"]')) return;
+  if (e.key === 'Enter' && !e.shiftKey) {
+    const control = e.target?.closest?.('button, a, [role="button"]');
+    if (control && control.id !== 'submitBtn' && !control.classList?.contains('option')) return;
+    if ($('submitBtn').hidden || $('submitBtn').disabled) return;
+    e.preventDefault();
+    if (!e.repeat) submitAnswer();
+    return;
+  }
   if (['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key) && session.items.length) {
     e.preventDefault();
     navigate(session.index + (e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1));

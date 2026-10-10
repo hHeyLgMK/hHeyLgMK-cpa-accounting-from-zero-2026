@@ -16,8 +16,8 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-[assembly: System.Reflection.AssemblyVersion("3.2.2.0")]
-[assembly: System.Reflection.AssemblyFileVersion("3.2.2.0")]
+[assembly: System.Reflection.AssemblyVersion("3.2.3.0")]
+[assembly: System.Reflection.AssemblyFileVersion("3.2.3.0")]
 [assembly: System.Reflection.AssemblyProduct("CPA 刷题库 · 设备同步")]
 
 public sealed class PeerApp : IDisposable {
